@@ -121,7 +121,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         public virtual ServiceParameterBinding ParameterBinding
         {
             get => _parameterBinding;
-            [param: NotNull] set => SetParameterBinding(value, ConfigurationSource.Explicit);
+            set => SetParameterBinding(value, ConfigurationSource.Explicit);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Microsoft.EntityFrameworkCore.Metadata
 {
@@ -32,5 +33,18 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         /// </summary>
         /// <returns> The configuration source. </returns>
         ConfigurationSource GetConfigurationSource();
+
+        /// <summary>
+        ///     Sets the <see cref="ServiceParameterBinding"/> for this property.
+        /// </summary>
+        /// <param name="parameterBinding"> The parameter binding. </param>
+        /// <param name="configurationSource"> The configuration source that is setting this facet. </param>
+        void SetParameterBinding(ServiceParameterBinding parameterBinding, ConfigurationSource configurationSource);
+
+        /// <summary>
+        ///     Returns the configuration source for <see cref="IServiceProperty.ParameterBinding" />.
+        /// </summary>
+        /// <returns> The configuration source for <see cref="IServiceProperty.ParameterBinding" />. </returns>
+        ConfigurationSource? GetParameterBindingConfigurationSource();
     }
 }

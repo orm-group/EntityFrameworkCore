@@ -31,8 +31,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
             Assert.Equal("Name", property.Name);
-            Assert.Equal("MyNameIs", property.Relational().ColumnName);
-            Assert.Equal("MyNameIs", property.SqlServer().ColumnName);
+            Assert.Equal("MyNameIs", property.Relational().GetColumnName());
+            Assert.Equal("MyNameIs", property.SqlServer().GetColumnName());
         }
 
         [Fact]
@@ -52,8 +52,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("nvarchar(DA)", property.Relational().ColumnType);
-            Assert.Equal("nvarchar(DA)", property.SqlServer().ColumnType);
+            Assert.Equal("nvarchar(DA)", property.Relational().GetColumnType());
+            Assert.Equal("nvarchar(DA)", property.SqlServer().GetColumnType());
         }
 
         [Fact]
@@ -75,8 +75,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .HasDefaultValueSql("CherryCoke");
 
-            Assert.Equal("CherryCoke", property.Relational().DefaultValueSql);
-            Assert.Equal("CherryCoke", property.SqlServer().DefaultValueSql);
+            Assert.Equal("CherryCoke", property.Relational().GetDefaultValueSql());
+            Assert.Equal("CherryCoke", property.SqlServer().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -100,8 +100,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .HasDefaultValueSql("CherryCoke");
 
-            Assert.Equal("CherryCoke", property.Relational().DefaultValueSql);
-            Assert.Equal("CherryCoke", property.SqlServer().DefaultValueSql);
+            Assert.Equal("CherryCoke", property.Relational().GetDefaultValueSql());
+            Assert.Equal("CherryCoke", property.SqlServer().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -194,8 +194,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .HasComputedColumnSql("CherryCoke");
 
-            Assert.Equal("CherryCoke", property.Relational().ComputedColumnSql);
-            Assert.Equal("CherryCoke", property.SqlServer().ComputedColumnSql);
+            Assert.Equal("CherryCoke", property.Relational().GetComputedColumnSql());
+            Assert.Equal("CherryCoke", property.SqlServer().GetComputedColumnSql());
             Assert.Equal(ValueGenerated.OnAddOrUpdate, property.ValueGenerated);
         }
 
@@ -219,8 +219,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .HasComputedColumnSql("CherryCoke");
 
-            Assert.Equal("CherryCoke", property.Relational().ComputedColumnSql);
-            Assert.Equal("CherryCoke", property.SqlServer().ComputedColumnSql);
+            Assert.Equal("CherryCoke", property.Relational().GetComputedColumnSql());
+            Assert.Equal("CherryCoke", property.SqlServer().GetComputedColumnSql());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -241,8 +241,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Offset");
 
-            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.Relational().DefaultValue);
-            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.SqlServer().DefaultValue);
+            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.Relational().GetDefaultValue());
+            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.SqlServer().GetDefaultValue());
         }
 
         [Fact]
@@ -263,8 +263,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Offset");
 
-            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.Relational().DefaultValue);
-            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.SqlServer().DefaultValue);
+            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.Relational().GetDefaultValue());
+            Assert.Equal(new DateTimeOffset(2006, 9, 19, 19, 0, 0, new TimeSpan(-8, 0, 0)), property.SqlServer().GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAddOrUpdate, property.ValueGenerated);
         }
 
@@ -282,9 +282,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal(2, property.SqlServer().DefaultValue);
-            Assert.Null(property.SqlServer().DefaultValueSql);
-            Assert.Null(property.SqlServer().ComputedColumnSql);
+            Assert.Equal(2, property.SqlServer().GetDefaultValue());
+            Assert.Null(property.SqlServer().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetComputedColumnSql());
         }
 
         [Fact]
@@ -301,9 +301,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal("1", property.SqlServer().DefaultValueSql);
-            Assert.Null(property.SqlServer().DefaultValue);
-            Assert.Null(property.SqlServer().ComputedColumnSql);
+            Assert.Equal("1", property.SqlServer().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetDefaultValue());
+            Assert.Null(property.SqlServer().GetComputedColumnSql());
         }
 
         [Fact]
@@ -320,9 +320,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal("0", property.SqlServer().ComputedColumnSql);
-            Assert.Null(property.SqlServer().DefaultValueSql);
-            Assert.Null(property.SqlServer().DefaultValue);
+            Assert.Equal("0", property.SqlServer().GetComputedColumnSql());
+            Assert.Null(property.SqlServer().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetDefaultValue());
         }
 
         [Fact]
@@ -339,12 +339,12 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(property.SqlServer().DefaultValueSql);
-            Assert.Equal(2, property.Relational().DefaultValue);
-            Assert.Equal(2, property.SqlServer().DefaultValue);
-            Assert.Null(property.Relational().ComputedColumnSql);
-            Assert.Null(property.SqlServer().ComputedColumnSql);
+            Assert.Null(property.Relational().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetDefaultValueSql());
+            Assert.Equal(2, property.Relational().GetDefaultValue());
+            Assert.Equal(2, property.SqlServer().GetDefaultValue());
+            Assert.Null(property.Relational().GetComputedColumnSql());
+            Assert.Null(property.SqlServer().GetComputedColumnSql());
         }
 
         [Fact]
@@ -361,12 +361,12 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Null(property.Relational().DefaultValue);
-            Assert.Null(property.SqlServer().DefaultValue);
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(property.SqlServer().DefaultValueSql);
-            Assert.Equal("0", property.Relational().ComputedColumnSql);
-            Assert.Equal("0", property.SqlServer().ComputedColumnSql);
+            Assert.Null(property.Relational().GetDefaultValue());
+            Assert.Null(property.SqlServer().GetDefaultValue());
+            Assert.Null(property.Relational().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetDefaultValueSql());
+            Assert.Equal("0", property.Relational().GetComputedColumnSql());
+            Assert.Equal("0", property.SqlServer().GetComputedColumnSql());
         }
 
         [Fact]
@@ -383,12 +383,12 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Null(property.Relational().ComputedColumnSql);
-            Assert.Null(property.SqlServer().ComputedColumnSql);
-            Assert.Null(property.Relational().DefaultValue);
-            Assert.Null(property.SqlServer().DefaultValue);
-            Assert.Equal("1", property.Relational().DefaultValueSql);
-            Assert.Equal("1", property.SqlServer().DefaultValueSql);
+            Assert.Null(property.Relational().GetComputedColumnSql());
+            Assert.Null(property.SqlServer().GetComputedColumnSql());
+            Assert.Null(property.Relational().GetDefaultValue());
+            Assert.Null(property.SqlServer().GetDefaultValue());
+            Assert.Equal("1", property.Relational().GetDefaultValueSql());
+            Assert.Equal("1", property.SqlServer().GetDefaultValueSql());
         }
 
         [Fact]
@@ -443,12 +443,12 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             Assert.Equal(SqlServerValueGenerationStrategy.IdentityColumn, property.SqlServer().ValueGenerationStrategy);
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
-            Assert.Null(property.Relational().DefaultValue);
-            Assert.Null(property.SqlServer().DefaultValue);
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(property.SqlServer().DefaultValueSql);
-            Assert.Equal("0", property.Relational().ComputedColumnSql);
-            Assert.Null(property.SqlServer().ComputedColumnSql);
+            Assert.Null(property.Relational().GetDefaultValue());
+            Assert.Null(property.SqlServer().GetDefaultValue());
+            Assert.Null(property.Relational().GetDefaultValueSql());
+            Assert.Null(property.SqlServer().GetDefaultValueSql());
+            Assert.Equal("0", property.Relational().GetComputedColumnSql());
+            Assert.Null(property.SqlServer().GetComputedColumnSql());
         }
 
         [Fact]
@@ -596,7 +596,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
 
-            Assert.Equal("Dexter", index.Relational().Name);
+            Assert.Equal("Dexter", index.Relational().GetName());
         }
 
         [Fact]
@@ -612,7 +612,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
 
-            Assert.Equal("SqlServer-specific expression", index.Relational().Filter);
+            Assert.Equal("SqlServer-specific expression", index.Relational().GetFilter());
         }
 
         [Fact]
@@ -628,8 +628,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
-            Assert.Equal("Custardizer", entityType.SqlServer().TableName);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
+            Assert.Equal("Custardizer", entityType.SqlServer().GetTableName());
         }
 
         [Fact]
@@ -645,8 +645,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
-            Assert.Equal("Custardizer", entityType.SqlServer().TableName);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
+            Assert.Equal("Custardizer", entityType.SqlServer().GetTableName());
         }
 
         [Fact]
@@ -662,10 +662,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
-            Assert.Equal("Custardizer", entityType.SqlServer().TableName);
-            Assert.Equal("dbOh", entityType.Relational().Schema);
-            Assert.Equal("dbOh", entityType.SqlServer().Schema);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
+            Assert.Equal("Custardizer", entityType.SqlServer().GetTableName());
+            Assert.Equal("dbOh", entityType.Relational().GetSchema());
+            Assert.Equal("dbOh", entityType.SqlServer().GetSchema());
         }
 
         [Fact]
@@ -681,10 +681,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
-            Assert.Equal("Custardizer", entityType.SqlServer().TableName);
-            Assert.Equal("dbOh", entityType.Relational().Schema);
-            Assert.Equal("dbOh", entityType.SqlServer().Schema);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
+            Assert.Equal("Custardizer", entityType.SqlServer().GetTableName());
+            Assert.Equal("dbOh", entityType.Relational().GetSchema());
+            Assert.Equal("dbOh", entityType.SqlServer().GetSchema());
         }
 
         [Fact]
@@ -1037,20 +1037,20 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var idProperty = model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
             Assert.Null(idProperty.SqlServer().ValueGenerationStrategy);
             Assert.Equal(ValueGenerated.OnAdd, idProperty.ValueGenerated);
-            Assert.Equal(1, idProperty.Relational().DefaultValue);
-            Assert.Equal(1, idProperty.SqlServer().DefaultValue);
+            Assert.Equal(1, idProperty.Relational().GetDefaultValue());
+            Assert.Equal(1, idProperty.SqlServer().GetDefaultValue());
 
             var nameProperty = model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Name));
             Assert.Null(nameProperty.SqlServer().ValueGenerationStrategy);
             Assert.Equal(ValueGenerated.OnAddOrUpdate, nameProperty.ValueGenerated);
-            Assert.Equal("Default", nameProperty.Relational().ComputedColumnSql);
-            Assert.Equal("Default", nameProperty.SqlServer().ComputedColumnSql);
+            Assert.Equal("Default", nameProperty.Relational().GetComputedColumnSql());
+            Assert.Equal("Default", nameProperty.SqlServer().GetComputedColumnSql());
 
             var offsetProperty = model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Offset));
             Assert.Null(offsetProperty.SqlServer().ValueGenerationStrategy);
             Assert.Equal(ValueGenerated.OnAdd, offsetProperty.ValueGenerated);
-            Assert.Equal("Now", offsetProperty.Relational().DefaultValueSql);
-            Assert.Equal("Now", offsetProperty.SqlServer().DefaultValueSql);
+            Assert.Equal("Now", offsetProperty.Relational().GetDefaultValueSql());
+            Assert.Equal("Now", offsetProperty.SqlServer().GetDefaultValueSql());
         }
 
         [Fact]
@@ -1212,8 +1212,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             Assert.Equal("Snook", property.SqlServer().HiLoSequenceName);
             Assert.Equal("Tasty", property.SqlServer().HiLoSequenceSchema);
 
-            ValidateSchemaNamedSpecificSequence(model.Relational().FindSequence("Snook", "Tasty"));
-            ValidateSchemaNamedSpecificSequence(model.SqlServer().FindSequence("Snook", "Tasty"));
+            ValidateSchemaNamedSpecificSequence(model.FindSequence("Snook", "Tasty"));
         }
 
         [Fact]
@@ -1242,8 +1241,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             Assert.Equal("Snook", property.SqlServer().HiLoSequenceName);
             Assert.Equal("Tasty", property.SqlServer().HiLoSequenceSchema);
 
-            ValidateSchemaNamedSpecificSequence(model.Relational().FindSequence("Snook", "Tasty"));
-            ValidateSchemaNamedSpecificSequence(model.SqlServer().FindSequence("Snook", "Tasty"));
+            ValidateSchemaNamedSpecificSequence(model.FindSequence("Snook", "Tasty"));
         }
 
         [Fact]
@@ -1684,7 +1682,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             Assert.IsType<IndexBuilder<Customer>>(returnedBuilder);
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
-            Assert.Equal("Eeeendeeex", index.Relational().Name);
+            Assert.Equal("Eeeendeeex", index.Relational().GetName());
         }
 
         [Fact]
@@ -1701,7 +1699,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             Assert.IsType<IndexBuilder<Customer>>(returnedBuilder);
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
-            Assert.Equal("[Id] % 2 = 0", index.Relational().Filter);
+            Assert.Equal("[Id] % 2 = 0", index.Relational().GetFilter());
         }
 
         private void AssertIsGeneric(EntityTypeBuilder<Customer> _)

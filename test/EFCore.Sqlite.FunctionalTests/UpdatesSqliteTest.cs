@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore
                     ));
                 Assert.Equal(
                     "LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkingCorrectly",
-                    entityType.Relational().TableName);
+                    entityType.Relational().GetTableName());
                 Assert.Equal(
                     "PK_LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkingCorrectly",
                     entityType.GetKeys().Single().Relational().Name);
@@ -33,7 +33,7 @@ namespace Microsoft.EntityFrameworkCore
                     entityType.GetForeignKeys().Single().Relational().ConstraintName);
                 Assert.Equal(
                     "IX_LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkingCorrectly_ProfileId_ProfileId1_ProfileId3_ProfileId4_ProfileId5_ProfileId6_ProfileId7_ProfileId8_ProfileId9_ProfileId10_ProfileId11_ProfileId12_ProfileId13_ProfileId14_ExtraProperty",
-                    entityType.GetIndexes().Single().Relational().Name);
+                    entityType.GetIndexes().Single().Relational().GetName());
             }
         }
     }

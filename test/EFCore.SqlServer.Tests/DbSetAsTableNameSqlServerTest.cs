@@ -8,7 +8,7 @@ namespace Microsoft.EntityFrameworkCore
     public class DbSetAsTableNameSqlServerTest : DbSetAsTableNameTest
     {
         protected override string GetTableName<TEntity>(DbContext context)
-            => context.Model.FindEntityType(typeof(TEntity)).SqlServer().TableName;
+            => context.Model.FindEntityType(typeof(TEntity)).SqlServer().GetTableName();
 
         protected override SetsContext CreateContext() => new SqlServerSetsContext();
 

@@ -316,6 +316,65 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 });
         }
 
+        [Fact]
+        public virtual void Sequence_is_stored_in_snapshot_as_fluent_api()
+        {
+            Test(
+                builder =>
+                {
+                    builder.HasSequence<int>("Foo", "Bar")
+                        .StartsAt(2)
+                        .HasMin(1)
+                        .HasMax(3)
+                        .IncrementsBy(2)
+                        .IsCyclic();
+                },
+                AddBoilerPlate(
+                    @"
+            modelBuilder
+                .HasSequence<int>(""Foo"", ""Bar"")
+                        .StartsAt(2)
+                        .HasMin(1)
+                        .HasMax(3)
+                        .IncrementsBy(2)
+                        .IsCyclic();"),
+                o =>
+                {
+                    Assert.Equal(3, o.GetAnnotations().Count());
+                });
+        }
+
+        [Fact]
+        public virtual void CheckConstraint_is_stored_in_snapshot_as_fluent_api()
+        {
+            Test(
+                builder =>
+                {
+                    builder.Entity<EntityWithTwoProperties>()
+                        .HasCheckConstraint("CK_Customer_AlternateId", "AlternateId > Id");
+                },
+                AddBoilerPlate(
+                    @"
+            modelBuilder.Entity(""Microsoft.EntityFrameworkCore.Migrations.ModelSnapshotSqlServerTest+EntityWithTwoProperties"", b =>
+                {
+                    b.Property<int>(""Id"")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation(""SqlServer:ValueGenerationStrategy"", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>(""AlternateId"");
+
+                    b.HasKey(""Id"");
+
+                    b.HasCheckConstraint(""CK_Customer_AlternateId"", ""AlternateId > Id"")
+
+                    b.ToTable(""EntityWithTwoProperties"");
+                });"),
+                o =>
+                {
+                    Assert.Equal(3, o.GetAnnotations().Count());
+                });
+        }
+
         #endregion
 
         #region EntityType
@@ -737,7 +796,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                     var entity = model.FindEntityType(originalEntity.Name);
 
                     Assert.NotNull(entity);
-                    Assert.Equal(originalEntity.Relational().TableName, entity.Relational().TableName);
+                    Assert.Equal(originalEntity.Relational().GetTableName(), entity.Relational().GetTableName());
                 });
         }
 
@@ -839,7 +898,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
 
                     b.HasDiscriminator<long>(""Day"");
                 });"),
-                model => Assert.Equal(typeof(long), model.GetEntityTypes().First().Relational().DiscriminatorProperty.ClrType));
+                model => Assert.Equal(typeof(long), model.GetEntityTypes().First().Relational().GetDiscriminatorProperty().ClrType));
         }
 
         [Fact]
@@ -871,7 +930,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 });"),
                 model =>
                 {
-                    var discriminatorProperty = model.GetEntityTypes().First().Relational().DiscriminatorProperty;
+                    var discriminatorProperty = model.GetEntityTypes().First().Relational().GetDiscriminatorProperty();
                     Assert.Equal(typeof(string), discriminatorProperty.ClrType);
                     Assert.False(discriminatorProperty.IsNullable);
                 });
@@ -1047,19 +1106,19 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                     var owned1index1 = ownedType1.GetIndexes().First();
                     Assert.Equal("EntityWithStringKeyId", owned1index1.Properties[0].Name);
                     Assert.True(owned1index1.IsUnique);
-                    Assert.Equal("[EntityWithTwoProperties_EntityWithStringKeyId] IS NOT NULL", owned1index1.Relational().Filter);
+                    Assert.Equal("[EntityWithTwoProperties_EntityWithStringKeyId] IS NOT NULL", owned1index1.Relational().GetFilter());
                     var owned1index2 = ownedType1.GetIndexes().Last();
                     Assert.Equal("Id", owned1index2.Properties[0].Name);
                     Assert.False(owned1index2.IsUnique);
-                    Assert.Null(owned1index2.Relational().Filter);
+                    Assert.Null(owned1index2.Relational().GetFilter());
                     Assert.Equal(new object[] { 1, -1 }, ownedType1.GetSeedData().Single().Values);
-                    Assert.Equal(nameof(EntityWithOneProperty), ownedType1.Relational().TableName);
+                    Assert.Equal(nameof(EntityWithOneProperty), ownedType1.Relational().GetTableName());
 
                     var entityWithStringKey = o.FindEntityType(typeof(EntityWithStringKey));
                     Assert.Same(
                         entityWithStringKey,
                         ownedType1.FindNavigation(nameof(EntityWithTwoProperties.EntityWithStringKey)).GetTargetType());
-                    Assert.Equal(nameof(EntityWithStringKey), entityWithStringKey.Relational().TableName);
+                    Assert.Equal(nameof(EntityWithStringKey), entityWithStringKey.Relational().GetTableName());
 
                     var ownership2 = entityWithStringKey.FindNavigation(nameof(EntityWithStringKey.Properties)).ForeignKey;
                     Assert.Equal("EntityWithStringKeyId", ownership2.Properties[0].Name);
@@ -1072,12 +1131,12 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                     var owned2index1 = ownedType2.GetIndexes().First();
                     Assert.Equal("EntityWithOnePropertyId", owned2index1.Properties[0].Name);
                     Assert.True(owned2index1.IsUnique);
-                    Assert.Equal("[EntityWithOnePropertyId] IS NOT NULL", owned2index1.Relational().Filter);
+                    Assert.Equal("[EntityWithOnePropertyId] IS NOT NULL", owned2index1.Relational().GetFilter());
                     var owned2index2 = ownedType2.GetIndexes().Last();
                     Assert.Equal("EntityWithStringKeyId", owned2index2.Properties[0].Name);
                     Assert.False(owned2index2.IsUnique);
-                    Assert.Null(owned2index2.Relational().Filter);
-                    Assert.Equal(nameof(EntityWithStringProperty), ownedType2.Relational().TableName);
+                    Assert.Null(owned2index2.Relational().GetFilter());
+                    Assert.Equal(nameof(EntityWithStringProperty), ownedType2.Relational().GetTableName());
 
                     Assert.Same(entityWithOneProperty, ownedType2.GetNavigations().Single().GetTargetType());
                 });
@@ -1425,7 +1484,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
 
                     b.ToTable(""EntityWithStringProperty"");
                 });"),
-                o => Assert.True(o.GetEntityTypes().First().FindProperty("Name").Relational().IsFixedLength));
+                o => Assert.True(o.GetEntityTypes().First().FindProperty("Name").Relational().GetIsFixedLength()));
         }
 
         [Fact]
@@ -2029,7 +2088,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 });"),
                 o => Assert.Equal(
                     "AlternateId <> 0",
-                    o.GetEntityTypes().First().GetIndexes().First().Relational().Filter));
+                    o.GetEntityTypes().First().GetIndexes().First().Relational().GetFilter()));
         }
 
         [Fact]
@@ -2099,7 +2158,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
 
                     b.ToTable(""EntityWithStringProperty"");
                 });"),
-                model => Assert.Equal(128, model.GetEntityTypes().First().GetIndexes().First().Relational().Name.Length));
+                model => Assert.Equal(128, model.GetEntityTypes().First().GetIndexes().First().Relational().GetName().Length));
         }
 
         #endregion
@@ -2425,7 +2484,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                     var originalIndex = originalChild.FindIndex(originalChild.FindProperty("Property"));
                     var index = child.FindIndex(child.FindProperty("Property"));
 
-                    Assert.Equal(originalIndex.Relational().Name, index.Relational().Name);
+                    Assert.Equal(originalIndex.Relational().GetName(), index.Relational().GetName());
                 });
         }
 

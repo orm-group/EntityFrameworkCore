@@ -45,7 +45,7 @@ SELECT @@ROWCOUNT;"
                     ));
                 Assert.Equal(
                     "LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorking~",
-                    entityType.Relational().TableName);
+                    entityType.Relational().GetTableName());
                 Assert.Equal(
                     "PK_LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWork~",
                     entityType.GetKeys().Single().Relational().Name);
@@ -54,7 +54,7 @@ SELECT @@ROWCOUNT;"
                     entityType.GetForeignKeys().Single().Relational().ConstraintName);
                 Assert.Equal(
                     "IX_LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWork~",
-                    entityType.GetIndexes().Single().Relational().Name);
+                    entityType.GetIndexes().Single().Relational().GetName());
 
                 var entityType2 = context.Model.FindEntityType(
                     typeof(
@@ -63,15 +63,15 @@ SELECT @@ROWCOUNT;"
 
                 Assert.Equal(
                     "LoginEntityTypeWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkin~1",
-                    entityType2.Relational().TableName);
+                    entityType2.Relational().GetTableName());
 
                 Assert.Equal(
                     "ExtraPropertyWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkingCo~",
-                    entityType2.GetProperties().ElementAt(1).Relational().ColumnName);
+                    entityType2.GetProperties().ElementAt(1).Relational().GetColumnName());
 
                 Assert.Equal(
                     "ExtraPropertyWithAnExtremelyLongAndOverlyConvolutedNameThatIsUsedToVerifyThatTheStoreIdentifierGenerationLengthLimitIsWorkingC~1",
-                    entityType2.GetProperties().ElementAt(2).Relational().ColumnName);
+                    entityType2.GetProperties().ElementAt(2).Relational().GetColumnName());
             }
         }
     }

@@ -357,12 +357,12 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Update.Internal
 
         private string GetTypeNameForCopy(IProperty property)
         {
-            var typeName = property.SqlServer().ColumnType;
+            var typeName = property.SqlServer().GetColumnType();
             if (typeName == null)
             {
                 var principalProperty = property.FindPrincipal();
 
-                typeName = principalProperty?.SqlServer().ColumnType
+                typeName = (principalProperty?.SqlServer()).GetColumnType()
                            ?? Dependencies.TypeMappingSource.FindMapping(property.ClrType)?.StoreType;
             }
 

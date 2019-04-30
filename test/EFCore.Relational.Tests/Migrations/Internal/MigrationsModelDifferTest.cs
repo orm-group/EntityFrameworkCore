@@ -2310,7 +2310,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     Assert.Equal("dbo", operation.Schema);
                     Assert.Equal("Flamingo", operation.Table);
                     Assert.Equal("CK_Flamingo_AlternateId", operation.Name);
-                    Assert.Equal("AlternateId > Id", operation.ConstraintSql);
+                    Assert.Equal("AlternateId > Id", operation.Sql);
                 });
         }
 
@@ -2381,7 +2381,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     Assert.Equal("dbo", createOperation.Schema);
                     Assert.Equal("Pelican", createOperation.Table);
                     Assert.Equal("CK_Flamingo", createOperation.Name);
-                    Assert.Equal("AlternateId > Id", createOperation.ConstraintSql);
+                    Assert.Equal("AlternateId > Id", createOperation.Sql);
                 });
         }
 
@@ -2420,7 +2420,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     Assert.Equal("dbo", createOperation.Schema);
                     Assert.Equal("Rook", createOperation.Table);
                     Assert.Equal("CK_Flamingo_AlternateId", createOperation.Name);
-                    Assert.Equal("AlternateId < Id", createOperation.ConstraintSql);
+                    Assert.Equal("AlternateId < Id", createOperation.Sql);
                 });
         }
 

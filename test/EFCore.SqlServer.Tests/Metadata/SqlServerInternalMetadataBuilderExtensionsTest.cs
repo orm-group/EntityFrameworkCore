@@ -45,13 +45,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var typeBuilder = CreateBuilder().Entity(typeof(Splot), ConfigurationSource.Convention);
 
             Assert.True(typeBuilder.SqlServer(ConfigurationSource.Convention).ToTable("Splew"));
-            Assert.Equal("Splew", typeBuilder.Metadata.SqlServer().TableName);
+            Assert.Equal("Splew", typeBuilder.Metadata.SqlServer().GetTableName());
 
             Assert.True(typeBuilder.SqlServer(ConfigurationSource.DataAnnotation).ToTable("Splow"));
-            Assert.Equal("Splow", typeBuilder.Metadata.SqlServer().TableName);
+            Assert.Equal("Splow", typeBuilder.Metadata.SqlServer().GetTableName());
 
             Assert.False(typeBuilder.SqlServer(ConfigurationSource.Convention).ToTable("Splod"));
-            Assert.Equal("Splow", typeBuilder.Metadata.SqlServer().TableName);
+            Assert.Equal("Splow", typeBuilder.Metadata.SqlServer().GetTableName());
 
             Assert.Equal(
                 1, typeBuilder.Metadata.GetAnnotations().Count(
@@ -63,7 +63,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var propertyBuilder = CreateBuilder()
                 .Entity(typeof(Splot), ConfigurationSource.Convention)
-                .Property("Id", typeof(int), ConfigurationSource.Convention);
+                .Property(typeof(int), "Id", ConfigurationSource.Convention);
 
             Assert.True(propertyBuilder.SqlServer(ConfigurationSource.Convention).HiLoSequenceName("Splew"));
             Assert.Equal("Splew", propertyBuilder.Metadata.SqlServer().HiLoSequenceName);
@@ -84,7 +84,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var propertyBuilder = CreateBuilder()
                 .Entity(typeof(Splot), ConfigurationSource.Convention)
-                .Property("Name", typeof(string), ConfigurationSource.Convention);
+                .Property(typeof(string), "Name", ConfigurationSource.Convention);
 
             Assert.False(
                 propertyBuilder.SqlServer(ConfigurationSource.Convention)
@@ -102,7 +102,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var propertyBuilder = CreateBuilder()
                 .Entity(typeof(Splot), ConfigurationSource.Convention)
-                .Property("Name", typeof(string), ConfigurationSource.Convention);
+                .Property(typeof(string), "Name", ConfigurationSource.Convention);
 
             Assert.False(
                 propertyBuilder.SqlServer(ConfigurationSource.Convention)
@@ -120,7 +120,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var modelBuilder = CreateBuilder();
             var entityTypeBuilder = modelBuilder.Entity(typeof(Splot), ConfigurationSource.Convention);
-            var idProperty = entityTypeBuilder.Property("Id", typeof(string), ConfigurationSource.Convention).Metadata;
+            var idProperty = entityTypeBuilder.Property(typeof(string), "Id", ConfigurationSource.Convention).Metadata;
             var keyBuilder = entityTypeBuilder.HasKey(new[] { idProperty.Name }, ConfigurationSource.Convention);
 
             Assert.True(keyBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
@@ -142,7 +142,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var modelBuilder = CreateBuilder();
             var entityTypeBuilder = modelBuilder.Entity(typeof(Splot), ConfigurationSource.Convention);
-            entityTypeBuilder.Property("Id", typeof(int), ConfigurationSource.Convention);
+            entityTypeBuilder.Property(typeof(int), "Id", ConfigurationSource.Convention);
             var indexBuilder = entityTypeBuilder.HasIndex(new[] { "Id" }, ConfigurationSource.Convention);
 
             Assert.True(indexBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
@@ -164,7 +164,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var modelBuilder = CreateBuilder();
             var entityTypeBuilder = modelBuilder.Entity(typeof(Splot), ConfigurationSource.Convention);
-            entityTypeBuilder.Property("Id", typeof(int), ConfigurationSource.Convention);
+            entityTypeBuilder.Property(typeof(int), "Id", ConfigurationSource.Convention);
             var relationshipBuilder = entityTypeBuilder.HasRelationship("Splot", new[] { "Id" }, ConfigurationSource.Convention);
 
             Assert.True(relationshipBuilder.SqlServer(ConfigurationSource.Convention).HasConstraintName("Splew"));

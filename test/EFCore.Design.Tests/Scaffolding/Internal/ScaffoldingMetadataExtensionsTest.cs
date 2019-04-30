@@ -16,15 +16,15 @@ namespace Microsoft.EntityFrameworkCore
         {
             IMutableModel model = new Model();
 
-            model.Scaffolding().EntityTypeErrors.Add("ET", "FAIL!");
-            Assert.Equal("FAIL!", model.Scaffolding().EntityTypeErrors["ET"]);
+            model.Scaffolding().GetEntityTypeErrors().Add("ET", "FAIL!");
+            Assert.Equal("FAIL!", model.Scaffolding().GetEntityTypeErrors()["ET"]);
 
-            model.Scaffolding().EntityTypeErrors = new Dictionary<string, string>();
-            Assert.Empty(model.Scaffolding().EntityTypeErrors.Values);
+            model.Scaffolding().SetEntityTypeErrors(new Dictionary<string, string>());
+            Assert.Empty(model.Scaffolding().GetEntityTypeErrors().Values);
 
-            model.Scaffolding().EntityTypeErrors["ET"] = "FAIL 2!";
-            model.Scaffolding().EntityTypeErrors.Clear();
-            Assert.Empty(model.Scaffolding().EntityTypeErrors.Values);
+            model.Scaffolding().GetEntityTypeErrors()["ET"] = "FAIL 2!";
+            model.Scaffolding().GetEntityTypeErrors().Clear();
+            Assert.Empty(model.Scaffolding().GetEntityTypeErrors().Values);
         }
 
         [Fact]
@@ -32,9 +32,9 @@ namespace Microsoft.EntityFrameworkCore
         {
             IMutableModel model = new Model();
             var entity = model.AddEntityType("Blog");
-            entity.Scaffolding().DbSetName = "Blogs";
+            entity.Scaffolding().SetDbSetName("Blogs");
 
-            Assert.Equal("Blogs", entity.Scaffolding().DbSetName);
+            Assert.Equal("Blogs", entity.Scaffolding().GetDbSetName());
         }
 
         [Fact]
@@ -43,15 +43,15 @@ namespace Microsoft.EntityFrameworkCore
             var model = new Model();
             var extensions = model.Scaffolding();
 
-            Assert.Null(extensions.DatabaseName);
+            Assert.Null(extensions.GetDatabaseName());
 
-            extensions.DatabaseName = "Northwind";
+            extensions.SetDatabaseName("Northwind");
 
-            Assert.Equal("Northwind", extensions.DatabaseName);
+            Assert.Equal("Northwind", extensions.GetDatabaseName());
 
-            extensions.DatabaseName = null;
+            extensions.SetDatabaseName(null);
 
-            Assert.Null(extensions.DatabaseName);
+            Assert.Null(extensions.GetDatabaseName());
         }
     }
 }

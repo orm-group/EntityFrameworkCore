@@ -18,23 +18,23 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .Metadata;
 
-            Assert.Equal("Name", property.Relational().ColumnName);
-            Assert.Equal("Name", ((IProperty)property).Relational().ColumnName);
+            Assert.Equal("Name", property.Relational().GetColumnName());
+            Assert.Equal("Name", ((IProperty)property).Relational().GetColumnName());
 
             property.Relational().ColumnName = "Eman";
 
-            Assert.Equal("Eman", property.Relational().ColumnName);
-            Assert.Equal("Eman", ((IProperty)property).Relational().ColumnName);
+            Assert.Equal("Eman", property.Relational().GetColumnName());
+            Assert.Equal("Eman", ((IProperty)property).Relational().GetColumnName());
 
             property.Relational().ColumnName = "MyNameIs";
 
-            Assert.Equal("MyNameIs", property.Relational().ColumnName);
-            Assert.Equal("MyNameIs", ((IProperty)property).Relational().ColumnName);
+            Assert.Equal("MyNameIs", property.Relational().GetColumnName());
+            Assert.Equal("MyNameIs", ((IProperty)property).Relational().GetColumnName());
 
             property.Relational().ColumnName = null;
 
-            Assert.Equal("Name", property.Relational().ColumnName);
-            Assert.Equal("Name", ((IProperty)property).Relational().ColumnName);
+            Assert.Equal("Name", property.Relational().GetColumnName());
+            Assert.Equal("Name", ((IProperty)property).Relational().GetColumnName());
         }
 
         [Fact]
@@ -46,23 +46,23 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Entity<Customer>()
                 .Metadata;
 
-            Assert.Equal("Customer", entityType.Relational().TableName);
-            Assert.Equal("Customer", ((IEntityType)entityType).Relational().TableName);
+            Assert.Equal("Customer", entityType.Relational().GetTableName());
+            Assert.Equal("Customer", ((IEntityType)entityType).Relational().GetTableName());
 
             entityType.Relational().TableName = "Customizer";
 
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Equal("Customizer", ((IEntityType)entityType).Relational().TableName);
+            Assert.Equal("Customizer", entityType.Relational().GetTableName());
+            Assert.Equal("Customizer", ((IEntityType)entityType).Relational().GetTableName());
 
             entityType.Relational().TableName = "Custardizer";
 
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
-            Assert.Equal("Custardizer", ((IEntityType)entityType).Relational().TableName);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
+            Assert.Equal("Custardizer", ((IEntityType)entityType).Relational().GetTableName());
 
             entityType.Relational().TableName = null;
 
-            Assert.Equal("Customer", entityType.Relational().TableName);
-            Assert.Equal("Customer", ((IEntityType)entityType).Relational().TableName);
+            Assert.Equal("Customer", entityType.Relational().GetTableName());
+            Assert.Equal("Customer", ((IEntityType)entityType).Relational().GetTableName());
         }
 
         [Fact]
@@ -74,13 +74,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Entity<Customer>()
                 .Metadata;
 
-            Assert.Null(entityType.Relational().Schema);
-            Assert.Null(((IEntityType)entityType).Relational().Schema);
+            Assert.Null(entityType.Relational().GetSchema());
+            Assert.Null(((IEntityType)entityType).Relational().GetSchema());
 
             entityType.Relational().Schema = "db0";
 
-            Assert.Equal("db0", entityType.Relational().Schema);
-            Assert.Equal("db0", ((IEntityType)entityType).Relational().Schema);
+            Assert.Equal("db0", entityType.Relational().GetSchema());
+            Assert.Equal("db0", ((IEntityType)entityType).Relational().GetSchema());
         }
 
         [Fact]
@@ -93,23 +93,23 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .Metadata;
 
-            Assert.Null(property.Relational().ColumnType);
-            Assert.Null(((IProperty)property).Relational().ColumnType);
+            Assert.Null(property.Relational().GetColumnType());
+            Assert.Null(((IProperty)property).Relational().GetColumnType());
 
             property.Relational().ColumnType = "nvarchar(max)";
 
-            Assert.Equal("nvarchar(max)", property.Relational().ColumnType);
-            Assert.Equal("nvarchar(max)", ((IProperty)property).Relational().ColumnType);
+            Assert.Equal("nvarchar(max)", property.Relational().GetColumnType());
+            Assert.Equal("nvarchar(max)", ((IProperty)property).Relational().GetColumnType());
 
             property.Relational().ColumnType = "nvarchar(verstappen)";
 
-            Assert.Equal("nvarchar(verstappen)", property.Relational().ColumnType);
-            Assert.Equal("nvarchar(verstappen)", ((IProperty)property).Relational().ColumnType);
+            Assert.Equal("nvarchar(verstappen)", property.Relational().GetColumnType());
+            Assert.Equal("nvarchar(verstappen)", ((IProperty)property).Relational().GetColumnType());
 
             property.Relational().ColumnType = null;
 
-            Assert.Null(property.Relational().ColumnType);
-            Assert.Null(((IProperty)property).Relational().ColumnType);
+            Assert.Null(property.Relational().GetColumnType());
+            Assert.Null(((IProperty)property).Relational().GetColumnType());
         }
 
         [Fact]
@@ -122,23 +122,23 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(e => e.Name)
                 .Metadata;
 
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(((IProperty)property).Relational().DefaultValueSql);
+            Assert.Null(property.Relational().GetDefaultValueSql());
+            Assert.Null(((IProperty)property).Relational().GetDefaultValueSql());
 
             property.Relational().DefaultValueSql = "newsequentialid()";
 
-            Assert.Equal("newsequentialid()", property.Relational().DefaultValueSql);
-            Assert.Equal("newsequentialid()", ((IProperty)property).Relational().DefaultValueSql);
+            Assert.Equal("newsequentialid()", property.Relational().GetDefaultValueSql());
+            Assert.Equal("newsequentialid()", ((IProperty)property).Relational().GetDefaultValueSql());
 
             property.Relational().DefaultValueSql = "expressyourself()";
 
-            Assert.Equal("expressyourself()", property.Relational().DefaultValueSql);
-            Assert.Equal("expressyourself()", ((IProperty)property).Relational().DefaultValueSql);
+            Assert.Equal("expressyourself()", property.Relational().GetDefaultValueSql());
+            Assert.Equal("expressyourself()", ((IProperty)property).Relational().GetDefaultValueSql());
 
             property.Relational().DefaultValueSql = null;
 
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(((IProperty)property).Relational().DefaultValueSql);
+            Assert.Null(property.Relational().GetDefaultValueSql());
+            Assert.Null(((IProperty)property).Relational().GetDefaultValueSql());
         }
 
         [Fact]
@@ -215,23 +215,23 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasIndex(e => e.Id)
                 .Metadata;
 
-            Assert.Equal("IX_Customer_Id", index.Relational().Name);
-            Assert.Equal("IX_Customer_Id", ((IIndex)index).Relational().Name);
+            Assert.Equal("IX_Customer_Id", index.Relational().GetName());
+            Assert.Equal("IX_Customer_Id", ((IIndex)index).Relational().GetName());
 
             index.Relational().Name = "MyIndex";
 
-            Assert.Equal("MyIndex", index.Relational().Name);
-            Assert.Equal("MyIndex", ((IIndex)index).Relational().Name);
+            Assert.Equal("MyIndex", index.Relational().GetName());
+            Assert.Equal("MyIndex", ((IIndex)index).Relational().GetName());
 
             index.Relational().Name = "DexKnows";
 
-            Assert.Equal("DexKnows", index.Relational().Name);
-            Assert.Equal("DexKnows", ((IIndex)index).Relational().Name);
+            Assert.Equal("DexKnows", index.Relational().GetName());
+            Assert.Equal("DexKnows", ((IIndex)index).Relational().GetName());
 
             index.Relational().Name = null;
 
-            Assert.Equal("IX_Customer_Id", index.Relational().Name);
-            Assert.Equal("IX_Customer_Id", ((IIndex)index).Relational().Name);
+            Assert.Equal("IX_Customer_Id", index.Relational().GetName());
+            Assert.Equal("IX_Customer_Id", ((IIndex)index).Relational().GetName());
         }
 
         [Fact]

@@ -25,51 +25,51 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
                 var index = entityType.GetIndexes().Single();
-                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().GetFilter());
 
                 indexBuilder.IsUnique(false);
 
-                Assert.Null(index.SqlServer().Filter);
+                Assert.Null(index.SqlServer().GetFilter());
 
                 indexBuilder.IsUnique();
 
-                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().GetFilter());
 
                 indexBuilder.ForSqlServerIsClustered();
 
-                Assert.Null(index.SqlServer().Filter);
+                Assert.Null(index.SqlServer().GetFilter());
 
                 indexBuilder.ForSqlServerIsClustered(false);
 
-                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().GetFilter());
 
                 entityTypeBuilder.Property(e => e.Name).IsRequired();
 
-                Assert.Null(index.SqlServer().Filter);
+                Assert.Null(index.SqlServer().GetFilter());
 
                 entityTypeBuilder.Property(e => e.Name).IsRequired(false);
 
-                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().GetFilter());
 
                 entityTypeBuilder.Property(e => e.Name).HasColumnName("RelationalName");
 
-                Assert.Equal("[RelationalName] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[RelationalName] IS NOT NULL", index.SqlServer().GetFilter());
 
                 entityTypeBuilder.Property(e => e.Name).HasColumnName("SqlServerName");
 
-                Assert.Equal("[SqlServerName] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[SqlServerName] IS NOT NULL", index.SqlServer().GetFilter());
 
                 entityTypeBuilder.Property(e => e.Name).HasColumnName(null);
 
-                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[Name] IS NOT NULL", index.SqlServer().GetFilter());
 
                 indexBuilder.HasFilter("Foo");
 
-                Assert.Equal("Foo", index.SqlServer().Filter);
+                Assert.Equal("Foo", index.SqlServer().GetFilter());
 
                 indexBuilder.HasFilter(null);
 
-                Assert.Null(index.SqlServer().Filter);
+                Assert.Null(index.SqlServer().GetFilter());
             }
 
             protected override TestModelBuilder CreateModelBuilder()
@@ -92,10 +92,10 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 var property1 = modelBuilder.Model.FindEntityType(typeof(DisjointChildSubclass1)).FindProperty("ParentId");
                 Assert.True(property1.IsForeignKey());
-                Assert.Equal("ParentId", property1.SqlServer().ColumnName);
+                Assert.Equal("ParentId", property1.SqlServer().GetColumnName());
                 var property2 = modelBuilder.Model.FindEntityType(typeof(DisjointChildSubclass2)).FindProperty("ParentId");
                 Assert.True(property2.IsForeignKey());
-                Assert.Equal("DisjointChildSubclass2_ParentId", property2.SqlServer().ColumnName);
+                Assert.Equal("DisjointChildSubclass2_ParentId", property2.SqlServer().GetColumnName());
             }
 
             [Fact]
@@ -110,9 +110,9 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                 modelBuilder.FinalizeModel();
 
                 var property1 = modelBuilder.Model.FindEntityType(typeof(DisjointChildSubclass1)).FindProperty(nameof(Child.Name));
-                Assert.Equal(nameof(Child.Name), property1.SqlServer().ColumnName);
+                Assert.Equal(nameof(Child.Name), property1.SqlServer().GetColumnName());
                 var property2 = modelBuilder.Model.FindEntityType(typeof(DisjointChildSubclass2)).FindProperty(nameof(Child.Name));
-                Assert.Equal(nameof(Child.Name), property2.SqlServer().ColumnName);
+                Assert.Equal(nameof(Child.Name), property2.SqlServer().GetColumnName());
             }
 
             [Fact] //Issue#10659
@@ -125,7 +125,7 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 var index = modelBuilder.Model.FindEntityType(typeof(CustomerDetails)).GetIndexes().Single();
 
-                Assert.Equal("[CustomerId] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[CustomerId] IS NOT NULL", index.SqlServer().GetFilter());
             }
 
             [Fact]
@@ -141,11 +141,11 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 var index = modelBuilder.Model.FindEntityType(typeof(CustomerDetails)).GetIndexes().Single();
 
-                Assert.Equal("[CustomerId] IS NOT NULL", index.SqlServer().Filter);
+                Assert.Equal("[CustomerId] IS NOT NULL", index.SqlServer().GetFilter());
 
                 modelBuilder.Ignore<DetailsBase>();
 
-                Assert.Null(index.SqlServer().Filter);
+                Assert.Null(index.SqlServer().GetFilter());
             }
 
             public class Parent
@@ -239,12 +239,12 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                 var bookLabel2Ownership1 = bookOwnership2.DeclaringEntityType.FindNavigation(nameof(BookLabel.AnotherBookLabel)).ForeignKey;
                 var bookLabel2Ownership2 = bookOwnership2.DeclaringEntityType.FindNavigation(nameof(BookLabel.SpecialBookLabel)).ForeignKey;
 
-                Assert.Equal(book.SqlServer().TableName, bookOwnership1.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal(book.SqlServer().TableName, bookOwnership2.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal(book.SqlServer().TableName, bookLabel1Ownership1.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal(book.SqlServer().TableName, bookLabel1Ownership2.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal(book.SqlServer().TableName, bookLabel2Ownership1.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal(book.SqlServer().TableName, bookLabel2Ownership2.DeclaringEntityType.SqlServer().TableName);
+                Assert.Equal(book.SqlServer().GetTableName(), bookOwnership1.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal(book.SqlServer().GetTableName(), bookOwnership2.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal(book.SqlServer().GetTableName(), bookLabel1Ownership1.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal(book.SqlServer().GetTableName(), bookLabel1Ownership2.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal(book.SqlServer().GetTableName(), bookLabel2Ownership1.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal(book.SqlServer().GetTableName(), bookLabel2Ownership2.DeclaringEntityType.SqlServer().GetTableName());
 
                 Assert.NotSame(bookOwnership1.DeclaringEntityType, bookOwnership2.DeclaringEntityType);
                 Assert.Equal(1, bookOwnership1.DeclaringEntityType.GetForeignKeys().Count());
@@ -263,10 +263,10 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 Assert.Equal(
                     nameof(Book.Label) + "_" + nameof(BookLabel.Id),
-                    bookOwnership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().ColumnName);
+                    bookOwnership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().GetColumnName());
                 Assert.Equal(
                     nameof(Book.AlternateLabel) + "_" + nameof(BookLabel.AnotherBookLabel) + "_" + nameof(BookLabel.Id),
-                    bookLabel2Ownership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().ColumnName);
+                    bookLabel2Ownership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().GetColumnName());
 
                 modelBuilder.Entity<Book>().OwnsOne(b => b.Label).ToTable("Label");
                 modelBuilder.Entity<Book>().OwnsOne(b => b.AlternateLabel).ToTable("AlternateLabel");
@@ -275,10 +275,10 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 Assert.Equal(
                     nameof(BookLabel.Id),
-                    bookOwnership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().ColumnName);
+                    bookOwnership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().GetColumnName());
                 Assert.Equal(
                     nameof(BookLabel.AnotherBookLabel) + "_" + nameof(BookLabel.Id),
-                    bookLabel2Ownership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().ColumnName);
+                    bookLabel2Ownership1.DeclaringEntityType.FindProperty(nameof(BookLabel.Id)).SqlServer().GetColumnName());
             }
 
             [Fact]
@@ -369,30 +369,30 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 Assert.Equal("AlternateLabelFK", bookOwnership2.Relational().ConstraintName);
 
-                Assert.Equal("BS", book.SqlServer().Schema);
-                Assert.Equal("BT", book.SqlServer().TableName);
-                Assert.Equal("LS", bookOwnership1.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("LT", bookOwnership1.DeclaringEntityType.SqlServer().TableName);
+                Assert.Equal("BS", book.SqlServer().GetSchema());
+                Assert.Equal("BT", book.SqlServer().GetTableName());
+                Assert.Equal("LS", bookOwnership1.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("LT", bookOwnership1.DeclaringEntityType.SqlServer().GetTableName());
                 Assert.False(bookOwnership1.DeclaringEntityType.SqlServer().IsMemoryOptimized);
-                Assert.Equal("TS", bookOwnership2.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("TT", bookOwnership2.DeclaringEntityType.SqlServer().TableName);
+                Assert.Equal("TS", bookOwnership2.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("TT", bookOwnership2.DeclaringEntityType.SqlServer().GetTableName());
                 Assert.True(bookOwnership2.DeclaringEntityType.SqlServer().IsMemoryOptimized);
-                Assert.Equal("AS2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("AT2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("SS1", bookLabel1Ownership2.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("ST1", bookLabel1Ownership2.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("AS1", bookLabel2Ownership1.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("AT1", bookLabel2Ownership1.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("SS2", bookLabel2Ownership2.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("ST2", bookLabel2Ownership2.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("SS21", bookLabel1Ownership11.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("ST21", bookLabel1Ownership11.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("AS11", bookLabel1Ownership21.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("AT11", bookLabel1Ownership21.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("SS11", bookLabel2Ownership11.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("ST11", bookLabel2Ownership11.DeclaringEntityType.SqlServer().TableName);
-                Assert.Equal("AS21", bookLabel2Ownership21.DeclaringEntityType.SqlServer().Schema);
-                Assert.Equal("AT21", bookLabel2Ownership21.DeclaringEntityType.SqlServer().TableName);
+                Assert.Equal("AS2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("AT2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("SS1", bookLabel1Ownership2.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("ST1", bookLabel1Ownership2.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("AS1", bookLabel2Ownership1.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("AT1", bookLabel2Ownership1.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("SS2", bookLabel2Ownership2.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("ST2", bookLabel2Ownership2.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("SS21", bookLabel1Ownership11.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("ST21", bookLabel1Ownership11.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("AS11", bookLabel1Ownership21.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("AT11", bookLabel1Ownership21.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("SS11", bookLabel2Ownership11.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("ST11", bookLabel2Ownership11.DeclaringEntityType.SqlServer().GetTableName());
+                Assert.Equal("AS21", bookLabel2Ownership21.DeclaringEntityType.SqlServer().GetSchema());
+                Assert.Equal("AT21", bookLabel2Ownership21.DeclaringEntityType.SqlServer().GetTableName());
 
                 Assert.Equal("Bar", bookLabel2Ownership11.PrincipalToDependent["Foo"]);
 
@@ -442,9 +442,9 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                 Assert.Equal(1, owned.GetIndexes().Count());
                 Assert.Equal(
                     new[] { nameof(Order.OrderId), nameof(Order.AnotherCustomerId), nameof(Order.CustomerId) },
-                    owned.GetProperties().Select(p => p.SqlServer().ColumnName));
-                Assert.Equal(nameof(Order), owned.SqlServer().TableName);
-                Assert.Null(owned.SqlServer().Schema);
+                    owned.GetProperties().Select(p => p.SqlServer().GetColumnName()));
+                Assert.Equal(nameof(Order), owned.SqlServer().GetTableName());
+                Assert.Null(owned.SqlServer().GetSchema());
                 Assert.True(owned.SqlServer().IsMemoryOptimized);
 
                 modelBuilder.Entity<Customer>().OwnsMany(
@@ -455,8 +455,8 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                         r.ToTable("bar", "foo");
                     });
 
-                Assert.Equal("bar", owned.SqlServer().TableName);
-                Assert.Equal("foo", owned.SqlServer().Schema);
+                Assert.Equal("bar", owned.SqlServer().GetTableName());
+                Assert.Equal("foo", owned.SqlServer().GetSchema());
                 Assert.Equal("Owned", ownership.Relational().ConstraintName);
 
                 modelBuilder.Entity<Customer>().OwnsMany(
@@ -465,8 +465,8 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
 
                 modelBuilder.FinalizeModel();
 
-                Assert.Equal("blah", owned.SqlServer().TableName);
-                Assert.Equal("foo", owned.SqlServer().Schema);
+                Assert.Equal("blah", owned.SqlServer().GetTableName());
+                Assert.Equal("foo", owned.SqlServer().GetSchema());
             }
 
             [Fact]

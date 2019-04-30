@@ -1071,6 +1071,24 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     any release. You should only use it directly in your code with extreme caution and knowing that
         ///     doing so can result in application failures when updating to a new Entity Framework Core release.
         /// </summary>
+        public virtual ForeignKey FindOwnership()
+            => GetForeignKeys().FirstOrDefault(fk => fk.IsOwnership);
+
+        /// <summary>
+        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
+        ///     any release. You should only use it directly in your code with extreme caution and knowing that
+        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
+        /// </summary>
+        public virtual ForeignKey FindDeclaredOwnership()
+            => GetDeclaredForeignKeys().FirstOrDefault(fk => fk.IsOwnership);
+
+        /// <summary>
+        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
+        ///     any release. You should only use it directly in your code with extreme caution and knowing that
+        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
+        /// </summary>
         public virtual IEnumerable<ForeignKey> GetDeclaredForeignKeys() => _foreignKeys;
 
         /// <summary>
@@ -1812,11 +1830,11 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
                 propertyType = memberInfo.GetMemberType();
                 typeConfigurationSource = ConfigurationSource.Convention.Max(typeConfigurationSource);
             }
-            else
+            else if (memberInfo != null
+                     && propertyType != memberInfo.GetMemberType()
+                     && (memberInfo as PropertyInfo)?.IsEFIndexerProperty() != true)
             {
-                if (memberInfo != null
-                    && propertyType != memberInfo.GetMemberType()
-                    && (memberInfo as PropertyInfo)?.IsEFIndexerProperty() != true)
+                if (typeConfigurationSource != null)
                 {
                     throw new InvalidOperationException(
                         CoreStrings.PropertyWrongClrType(
@@ -1825,6 +1843,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
                             memberInfo.GetMemberType().ShortDisplayName(),
                             propertyType.ShortDisplayName()));
                 }
+
+                propertyType = memberInfo.GetMemberType();
             }
 
             var property = new Property(
@@ -2333,16 +2353,6 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         #endregion
 
         #region Annotations
-
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public virtual void SetPropertyAccessMode(
-            PropertyAccessMode? propertyAccessMode, ConfigurationSource configurationSource)
-            => this.SetOrRemoveAnnotation(CoreAnnotationNames.PropertyAccessMode, propertyAccessMode, configurationSource);
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to

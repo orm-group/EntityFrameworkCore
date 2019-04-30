@@ -142,14 +142,14 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
                     .Any(property => property.IsColumnNullable()))
             {
                 if (columnNameChanged
-                    || index.SqlServer().Filter == null)
+                    || index.SqlServer().GetFilter() == null)
                 {
                     indexBuilder.SqlServer(ConfigurationSource.Convention).HasFilter(CreateIndexFilter(index));
                 }
             }
             else
             {
-                if (index.SqlServer().Filter != null)
+                if (index.SqlServer().GetFilter() != null)
                 {
                     indexBuilder.SqlServer(ConfigurationSource.Convention).HasFilter(null);
                 }
@@ -162,7 +162,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
         {
             var nullableColumns = index.Properties
                 .Where(property => property.IsColumnNullable())
-                .Select(property => property.SqlServer().ColumnName)
+                .Select(property => property.SqlServer().GetColumnName())
                 .ToList();
 
             var builder = new StringBuilder();

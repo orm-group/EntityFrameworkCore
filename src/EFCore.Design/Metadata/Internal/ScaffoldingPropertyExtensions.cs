@@ -11,8 +11,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
     ///     any release. You should only use it directly in your code with extreme caution and knowing that
     ///     doing so can result in application failures when updating to a new Entity Framework Core release.
     /// </summary>
-    // Issue#11266 This type is being used by provider code. Do not break.
-    public class RelationalForeignKeyBuilderAnnotations : RelationalForeignKeyAnnotations
+    public static class ScaffoldingPropertyExtensions
     {
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
@@ -20,12 +19,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     any release. You should only use it directly in your code with extreme caution and knowing that
         ///     doing so can result in application failures when updating to a new Entity Framework Core release.
         /// </summary>
-        public RelationalForeignKeyBuilderAnnotations(
-            [NotNull] InternalRelationshipBuilder internalBuilder,
-            ConfigurationSource configurationSource)
-            : base(new RelationalAnnotationsBuilder(internalBuilder, configurationSource))
-        {
-        }
+        public static int GetColumnOrdinal([NotNull] this IProperty property)
+            => (int?)property[ScaffoldingAnnotationNames.ColumnOrdinal] ?? -1;
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
@@ -33,15 +28,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         ///     any release. You should only use it directly in your code with extreme caution and knowing that
         ///     doing so can result in application failures when updating to a new Entity Framework Core release.
         /// </summary>
-        public virtual bool HasConstraintName([CanBeNull] string value) => SetConstraintName(value);
-
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public virtual bool CanSetConstraintName([CanBeNull] string value)
-            => Annotations.CanSetAnnotation(RelationalAnnotationNames.Name, value);
+        public static void SetColumnOrdinal([NotNull] this IMutableProperty property, [CanBeNull] int? ordinal)
+            => property.SetOrRemoveAnnotation(
+                ScaffoldingAnnotationNames.ColumnOrdinal,
+                ordinal);
     }
 }

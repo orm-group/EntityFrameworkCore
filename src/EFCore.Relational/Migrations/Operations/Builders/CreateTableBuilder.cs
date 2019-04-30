@@ -175,7 +175,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Operations.Builders
                 Schema = Operation.Schema,
                 Table = Operation.Name,
                 Name = name,
-                ConstraintSql = constraintSql
+                Sql = constraintSql
             };
             Operation.CheckConstraints.Add(operation);
 

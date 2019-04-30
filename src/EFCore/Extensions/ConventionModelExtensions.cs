@@ -21,7 +21,7 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="model"> The model to find the entity type in. </param>
         /// <param name="type"> The type to find the corresponding entity type for. </param>
-        /// <returns> The entity type, or null if none if found. </returns>
+        /// <returns> The entity type, or <c>null</c> if none if found. </returns>
         public static IConventionEntityType FindEntityType([NotNull] this IConventionModel model, [NotNull] Type type)
             => (IConventionEntityType)((IModel)model).FindEntityType(type);
 
@@ -33,7 +33,7 @@ namespace Microsoft.EntityFrameworkCore
         /// <param name="type"> The type of the entity type to find. </param>
         /// <param name="definingNavigationName"> The defining navigation of the entity type to find. </param>
         /// <param name="definingEntityType"> The defining entity type of the entity type to find. </param>
-        /// <returns> The entity type, or null if none are found. </returns>
+        /// <returns> The entity type, or <c>null</c> if none are found. </returns>
         public static IConventionEntityType FindEntityType(
             [NotNull] this IConventionModel model,
             [NotNull] Type type,

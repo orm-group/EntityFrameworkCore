@@ -29,15 +29,15 @@ namespace Microsoft.EntityFrameworkCore.Query
                 var cokeType = context.Model.FindEntityType(typeof(Coke));
                 var teaType = context.Model.FindEntityType(typeof(Tea));
 
-                Assert.Equal("SugarGrams", cokeType.FindProperty("SugarGrams").Relational().ColumnName);
-                Assert.Equal("CaffeineGrams", cokeType.FindProperty("CaffeineGrams").Relational().ColumnName);
-                Assert.Equal("CokeCO2", cokeType.FindProperty("Carbination").Relational().ColumnName);
+                Assert.Equal("SugarGrams", cokeType.FindProperty("SugarGrams").Relational().GetColumnName());
+                Assert.Equal("CaffeineGrams", cokeType.FindProperty("CaffeineGrams").Relational().GetColumnName());
+                Assert.Equal("CokeCO2", cokeType.FindProperty("Carbination").Relational().GetColumnName());
 
-                Assert.Equal("SugarGrams", liltType.FindProperty("SugarGrams").Relational().ColumnName);
-                Assert.Equal("LiltCO2", liltType.FindProperty("Carbination").Relational().ColumnName);
+                Assert.Equal("SugarGrams", liltType.FindProperty("SugarGrams").Relational().GetColumnName());
+                Assert.Equal("LiltCO2", liltType.FindProperty("Carbination").Relational().GetColumnName());
 
-                Assert.Equal("CaffeineGrams", teaType.FindProperty("CaffeineGrams").Relational().ColumnName);
-                Assert.Equal("HasMilk", teaType.FindProperty("HasMilk").Relational().ColumnName);
+                Assert.Equal("CaffeineGrams", teaType.FindProperty("CaffeineGrams").Relational().GetColumnName());
+                Assert.Equal("HasMilk", teaType.FindProperty("HasMilk").Relational().GetColumnName());
             }
         }
 

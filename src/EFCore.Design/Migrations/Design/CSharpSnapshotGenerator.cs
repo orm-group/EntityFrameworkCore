@@ -678,7 +678,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Design
                     .Append(".")
                     .Append(nameof(RelationalEntityTypeBuilderExtensions.ToTable))
                     .Append("(")
-                    .Append(Code.Literal((string)tableNameAnnotation?.Value ?? entityType.Relational().TableName));
+                    .Append(Code.Literal((string)tableNameAnnotation?.Value ?? entityType.Relational().GetTableName()));
                 annotations.Remove(tableNameAnnotation);
                 nonDefaultName = true;
             }
@@ -730,7 +730,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Design
                 if (discriminatorValueAnnotation?.Value != null)
                 {
                     var value = discriminatorValueAnnotation.Value;
-                    var discriminatorProperty = entityType.RootType().Relational().DiscriminatorProperty;
+                    var discriminatorProperty = entityType.RootType().GetDiscriminatorProperty();
                     if (discriminatorProperty != null)
                     {
                         var valueConverter = FindValueConverter(discriminatorProperty);

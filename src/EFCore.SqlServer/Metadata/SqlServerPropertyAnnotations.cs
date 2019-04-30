@@ -5,8 +5,6 @@ using System;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Internal;
 using Microsoft.EntityFrameworkCore.SqlServer.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Utilities;
@@ -178,9 +176,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var relationalProperty = Property.Relational();
             if (!fallbackToModel
-                || relationalProperty.DefaultValue != null
-                || relationalProperty.DefaultValueSql != null
-                || relationalProperty.ComputedColumnSql != null)
+                || relationalProperty.GetDefaultValue() != null
+                || relationalProperty.GetDefaultValueSql() != null
+                || relationalProperty.GetComputedColumnSql() != null)
             {
                 return null;
             }
@@ -283,19 +281,19 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 if (GetDefaultValue(false) != null)
                 {
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(DefaultValue)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(GetDefaultValue())));
                 }
 
                 if (GetDefaultValueSql(false) != null)
                 {
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(DefaultValueSql)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(GetDefaultValueSql())));
                 }
 
                 if (GetComputedColumnSql(false) != null)
                 {
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(ComputedColumnSql)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ValueGenerationStrategy), Property.Name, nameof(GetComputedColumnSql())));
                 }
             }
             else if (value != null
@@ -338,7 +336,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 if (ValueGenerationStrategy != null)
                 {
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(DefaultValue), Property.Name, nameof(ValueGenerationStrategy)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetDefaultValue()), Property.Name, nameof(ValueGenerationStrategy)));
                 }
             }
             else if (value != null
@@ -378,8 +376,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             {
                 if (ValueGenerationStrategy != null)
                 {
+                    // TODO: Extract to convention
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(DefaultValueSql), Property.Name, nameof(ValueGenerationStrategy)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetDefaultValueSql()), Property.Name, nameof(ValueGenerationStrategy)));
                 }
             }
             else if (value != null
@@ -420,7 +419,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 if (ValueGenerationStrategy != null)
                 {
                     throw new InvalidOperationException(
-                        RelationalStrings.ConflictingColumnServerGeneration(nameof(ComputedColumnSql), Property.Name, nameof(ValueGenerationStrategy)));
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetComputedColumnSql()), Property.Name, nameof(ValueGenerationStrategy)));
                 }
             }
             else if (value != null

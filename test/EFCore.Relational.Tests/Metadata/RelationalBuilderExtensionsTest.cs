@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.TestUtilities;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
 namespace Microsoft.EntityFrameworkCore.Metadata
 {
@@ -25,14 +26,14 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.True(property.Relational().IsFixedLength);
+            Assert.True(property.IsFixedLength());
 
             modelBuilder
                 .Entity<Customer>()
                 .Property(e => e.Name)
                 .IsFixedLength(false);
 
-            Assert.False(property.Relational().IsFixedLength);
+            Assert.False(property.IsFixedLength());
         }
 
         [Fact]
@@ -49,7 +50,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var model = builder.Model;
             var index = model.FindEntityType(typeof(Customer)).GetIndexes().Single();
-            Assert.Equal("[Id] % 2 = 0", index.Relational().Filter);
+            Assert.Equal("[Id] % 2 = 0", index.GetFilter());
         }
 
         [Fact]
@@ -65,7 +66,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
             Assert.Equal("Name", property.Name);
-            Assert.Equal("Eman", property.Relational().ColumnName);
+            Assert.Equal("Eman", property.GetColumnName());
         }
 
         [Fact]
@@ -80,7 +81,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("nvarchar(42)", property.Relational().ColumnType);
+            Assert.Equal("nvarchar(42)", property.GetColumnType());
         }
 
         [Fact]
@@ -95,7 +96,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("CherryCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("CherryCoke", property.GetDefaultValueSql());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -112,7 +113,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("CherryCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("CherryCoke", property.GetDefaultValueSql());
             Assert.Equal(ValueGenerated.OnAddOrUpdate, property.ValueGenerated);
         }
 
@@ -128,7 +129,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("CherryCoke", property.Relational().ComputedColumnSql);
+            Assert.Equal("CherryCoke", property.GetComputedColumnSql());
             Assert.Equal(ValueGenerated.OnAddOrUpdate, property.ValueGenerated);
         }
 
@@ -145,7 +146,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal("CherryCoke", property.Relational().ComputedColumnSql);
+            Assert.Equal("CherryCoke", property.GetComputedColumnSql());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -162,7 +163,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal(stringValue, property.Relational().DefaultValue);
+            Assert.Equal(stringValue, property.GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -178,7 +179,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("SomeShort");
 
-            Assert.Equal((short)7, property.Relational().DefaultValue);
+            Assert.Equal((short)7, property.GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -196,7 +197,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("Name");
 
-            Assert.Equal(stringValue, property.Relational().DefaultValue);
+            Assert.Equal(stringValue, property.GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAddOrUpdate, property.ValueGenerated);
         }
 
@@ -212,8 +213,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty("EnumValue");
 
-            Assert.Equal(typeof(MyEnum), property.Relational().DefaultValue.GetType());
-            Assert.Equal(MyEnum.Tue, property.Relational().DefaultValue);
+            Assert.Equal(typeof(MyEnum), property.GetDefaultValue().GetType());
+            Assert.Equal(MyEnum.Tue, property.GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -231,9 +232,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal(2, property.Relational().DefaultValue);
-            Assert.Null(property.Relational().DefaultValueSql);
-            Assert.Null(property.Relational().ComputedColumnSql);
+            Assert.Equal(2, property.GetDefaultValue());
+            Assert.Null(property.GetDefaultValueSql());
+            Assert.Null(property.GetComputedColumnSql());
         }
 
         [Fact]
@@ -250,9 +251,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal("1", property.Relational().DefaultValueSql);
-            Assert.Null(property.Relational().DefaultValue);
-            Assert.Null(property.Relational().ComputedColumnSql);
+            Assert.Equal("1", property.GetDefaultValueSql());
+            Assert.Null(property.GetDefaultValue());
+            Assert.Null(property.GetComputedColumnSql());
         }
 
         [Fact]
@@ -269,9 +270,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var property = modelBuilder.Model.FindEntityType(typeof(Customer)).FindProperty(nameof(Customer.Id));
 
-            Assert.Equal("0", property.Relational().ComputedColumnSql);
-            Assert.Null(property.Relational().DefaultValue);
-            Assert.Null(property.Relational().DefaultValueSql);
+            Assert.Equal("0", property.GetComputedColumnSql());
+            Assert.Null(property.GetDefaultValue());
+            Assert.Null(property.GetDefaultValueSql());
         }
 
         [Fact]
@@ -286,21 +287,21 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
             var key = entityType.FindKey(entityType.FindProperty(nameof(Customer.Name)));
 
-            Assert.Equal("AK_Customer_Name", key.Relational().Name);
+            Assert.Equal("AK_Customer_Name", key.GetName());
 
             modelBuilder
                 .Entity<Customer>()
                 .Property(e => e.Name)
                 .HasColumnName("Pie");
 
-            Assert.Equal("AK_Customer_Pie", key.Relational().Name);
+            Assert.Equal("AK_Customer_Pie", key.GetName());
 
             modelBuilder
                 .Entity<Customer>()
                 .HasAlternateKey(e => e.Name)
                 .HasName("KeyLimePie");
 
-            Assert.Equal("KeyLimePie", key.Relational().Name);
+            Assert.Equal("KeyLimePie", key.GetName());
         }
 
         [Fact]
@@ -315,7 +316,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var key = modelBuilder.Model.FindEntityType(typeof(Customer)).FindPrimaryKey();
 
-            Assert.Equal("KeyLimePie", key.Relational().Name);
+            Assert.Equal("KeyLimePie", key.GetName());
         }
 
         [Fact]
@@ -329,12 +330,12 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(Order)).GetForeignKeys()
                 .Single(fk => fk.PrincipalEntityType.ClrType == typeof(Customer));
 
-            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.Relational().ConstraintName);
+            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.GetConstraintName());
 
             modelBuilder
                 .Entity<Order>().Property(e => e.CustomerId).HasColumnName("CID");
 
-            Assert.Equal("FK_Order_Customer_CID", foreignKey.Relational().ConstraintName);
+            Assert.Equal("FK_Order_Customer_CID", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -349,13 +350,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(Order)).GetForeignKeys()
                 .Single(fk => fk.PrincipalEntityType.ClrType == typeof(Customer));
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
 
             modelBuilder
                 .Entity<Customer>().HasMany(e => e.Orders).WithOne(e => e.Customer)
                 .HasConstraintName(null);
 
-            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.Relational().ConstraintName);
+            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -371,7 +372,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(Order)).GetForeignKeys()
                 .Single(fk => fk.PrincipalEntityType.ClrType == typeof(Customer));
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -386,13 +387,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(Order)).GetForeignKeys()
                 .Single(fk => fk.PrincipalEntityType.ClrType == typeof(Customer));
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
 
             modelBuilder
                 .Entity<Order>().HasOne(e => e.Customer).WithMany(e => e.Orders)
                 .HasConstraintName(null);
 
-            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.Relational().ConstraintName);
+            Assert.Equal("FK_Order_Customer_CustomerId", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -408,7 +409,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(Order)).GetForeignKeys()
                 .Single(fk => fk.PrincipalEntityType.ClrType == typeof(Customer));
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -423,13 +424,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(OrderDetails)).GetForeignKeys().Single();
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
 
             modelBuilder
                 .Entity<Order>().HasOne(e => e.Details).WithOne(e => e.Order)
                 .HasConstraintName(null);
 
-            Assert.Equal("FK_OrderDetails_Order_OrderId", foreignKey.Relational().ConstraintName);
+            Assert.Equal("FK_OrderDetails_Order_OrderId", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -444,7 +445,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var foreignKey = modelBuilder.Model.FindEntityType(typeof(OrderDetails)).GetForeignKeys().Single();
 
-            Assert.Equal("LemonSupreme", foreignKey.Relational().ConstraintName);
+            Assert.Equal("LemonSupreme", foreignKey.GetConstraintName());
         }
 
         [Fact]
@@ -458,14 +459,14 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
 
-            Assert.Equal("IX_Customer_Id", index.Relational().Name);
+            Assert.Equal("IX_Customer_Id", index.GetName());
 
             modelBuilder
                 .Entity<Customer>()
                 .Property(e => e.Id)
                 .HasColumnName("Eendax");
 
-            Assert.Equal("IX_Customer_Eendax", index.Relational().Name);
+            Assert.Equal("IX_Customer_Eendax", index.GetName());
         }
 
         [Fact]
@@ -480,7 +481,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var index = modelBuilder.Model.FindEntityType(typeof(Customer)).GetIndexes().Single();
 
-            Assert.Equal("Eeeendeeex", index.Relational().Name);
+            Assert.Equal("Eeeendeeex", index.GetName());
         }
 
         [Fact]
@@ -495,7 +496,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
+            Assert.Equal("Customizer", entityType.GetTableName());
         }
 
         [Fact]
@@ -510,7 +511,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
+            Assert.Equal("Customizer", entityType.GetTableName());
         }
 
         [Fact]
@@ -525,8 +526,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Equal("db0", entityType.Relational().Schema);
+            Assert.Equal("Customizer", entityType.GetTableName());
+            Assert.Equal("db0", entityType.GetSchema());
         }
 
         [Fact]
@@ -541,8 +542,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Equal("db0", entityType.Relational().Schema);
+            Assert.Equal("Customizer", entityType.GetTableName());
+            Assert.Equal("db0", entityType.GetSchema());
         }
 
         [Fact]
@@ -554,11 +555,11 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Entity<Customer>()
                 .HasCheckConstraint("CK_Customer_AlternateId", "AlternateId > Id");
 
-            var checkConstraint = modelBuilder.Model.Relational().FindCheckConstraint("CK_Customer_AlternateId", "Customer");
+            var checkConstraint = modelBuilder.Model.FindCheckConstraint("CK_Customer_AlternateId", "Customer");
 
             Assert.NotNull(checkConstraint);
             Assert.Equal("CK_Customer_AlternateId", checkConstraint.Name);
-            Assert.Equal("AlternateId > Id", checkConstraint.ConstraintSql);
+            Assert.Equal("AlternateId > Id", checkConstraint.Sql);
             Assert.Equal("Customer", checkConstraint.Table);
             Assert.Equal(null, checkConstraint.Schema);
         }
@@ -573,11 +574,11 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .ToTable("Customizer", "db0")
                 .HasCheckConstraint("CK_Customer_AlternateId", "AlternateId > Id");
 
-            var checkConstraint = modelBuilder.Model.Relational().FindCheckConstraint("CK_Customer_AlternateId", "Customizer", "db0");
+            var checkConstraint = modelBuilder.Model.FindCheckConstraint("CK_Customer_AlternateId", "Customizer", "db0");
 
             Assert.NotNull(checkConstraint);
             Assert.Equal("CK_Customer_AlternateId", checkConstraint.Name);
-            Assert.Equal("AlternateId > Id", checkConstraint.ConstraintSql);
+            Assert.Equal("AlternateId > Id", checkConstraint.Sql);
             Assert.Equal("Customizer", checkConstraint.Table);
             Assert.Equal("db0", checkConstraint.Schema);
         }
@@ -594,10 +595,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer), "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -617,10 +618,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue("2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -635,10 +636,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer), "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -658,10 +659,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue("2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -676,10 +677,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer), "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -699,10 +700,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer), "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -717,10 +718,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer).FullName, "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Name", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Name", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -735,10 +736,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue(typeof(SpecialCustomer), "2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Discriminator", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Discriminator", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -757,10 +758,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasValue("2");
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
-            Assert.Equal("Discriminator", entityType.Relational().DiscriminatorProperty.Name);
-            Assert.Equal(typeof(string), entityType.Relational().DiscriminatorProperty.ClrType);
-            Assert.Equal("1", entityType.Relational().DiscriminatorValue);
-            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).Relational().DiscriminatorValue);
+            Assert.Equal("Discriminator", entityType.GetDiscriminatorProperty().Name);
+            Assert.Equal(typeof(string), entityType.GetDiscriminatorProperty().ClrType);
+            Assert.Equal("1", entityType.GetDiscriminatorValue());
+            Assert.Equal("2", modelBuilder.Model.FindEntityType(typeof(SpecialCustomer)).GetDiscriminatorValue());
         }
 
         [Fact]
@@ -768,11 +769,11 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         {
             var modelBuilder = CreateConventionModelBuilder();
 
-            Assert.Null(modelBuilder.Model.Relational().DefaultSchema);
+            Assert.Null(modelBuilder.Model.GetDefaultSchema());
 
             modelBuilder.HasDefaultSchema("db0");
 
-            Assert.Equal("db0", modelBuilder.Model.Relational().DefaultSchema);
+            Assert.Equal("db0", modelBuilder.Model.GetDefaultSchema());
         }
 
         [Fact]
@@ -787,14 +788,14 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Null(entityType.Relational().Schema);
+            Assert.Equal("Customizer", entityType.GetTableName());
+            Assert.Null(entityType.GetSchema());
 
             modelBuilder.HasDefaultSchema("db0");
 
-            Assert.Equal("db0", modelBuilder.Model.Relational().DefaultSchema);
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Equal("db0", entityType.Relational().Schema);
+            Assert.Equal("db0", modelBuilder.Model.GetDefaultSchema());
+            Assert.Equal("Customizer", entityType.GetTableName());
+            Assert.Equal("db0", entityType.GetSchema());
         }
 
         [Fact]
@@ -810,10 +811,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             var entityType = modelBuilder.Model.FindEntityType(typeof(Customer));
 
-            Assert.Equal("db0", modelBuilder.Model.Relational().DefaultSchema);
+            Assert.Equal("db0", modelBuilder.Model.GetDefaultSchema());
             Assert.Equal("Customer", entityType.DisplayName());
-            Assert.Equal("Customizer", entityType.Relational().TableName);
-            Assert.Equal("db1", entityType.Relational().Schema);
+            Assert.Equal("Customizer", entityType.GetTableName());
+            Assert.Equal("db1", entityType.GetSchema());
         }
 
         [Fact]
@@ -824,9 +825,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             modelBuilder.HasDefaultSchema("Tasty");
             modelBuilder.HasSequence("Snook");
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
-            Assert.Equal("Tasty", modelBuilder.Model.Relational().DefaultSchema);
+            Assert.Equal("Tasty", modelBuilder.Model.GetDefaultSchema());
             ValidateSchemaNamedSequence(sequence);
         }
 
@@ -838,9 +839,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             modelBuilder.HasDefaultSchema("db0");
             modelBuilder.HasSequence("Snook", "Tasty");
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
-            Assert.Equal("db0", modelBuilder.Model.Relational().DefaultSchema);
+            Assert.Equal("db0", modelBuilder.Model.GetDefaultSchema());
             ValidateSchemaNamedSequence(sequence);
         }
 
@@ -851,7 +852,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             modelBuilder.HasSequence("Snook");
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
             ValidateNamedSequence(sequence);
         }
@@ -874,7 +875,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             modelBuilder.HasSequence("Snook", "Tasty");
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
             ValidateSchemaNamedSequence(sequence);
         }
@@ -902,7 +903,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasMin(111)
                 .HasMax(2222);
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
             ValidateNamedSpecificSequence(sequence);
         }
@@ -919,7 +920,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasMin(111)
                 .HasMax(2222);
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
             ValidateNamedSpecificSequence(sequence);
         }
@@ -939,7 +940,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                             .HasMax(2222);
                     });
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
             ValidateNamedSpecificSequence(sequence);
         }
@@ -959,11 +960,11 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                             .HasMax(2222);
                     });
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook");
+            var sequence = modelBuilder.Model.FindSequence("Snook");
 
             ValidateNamedSpecificSequence(sequence);
         }
-        
+
         private static void ValidateNamedSpecificSequence(ISequence sequence)
         {
             Assert.Equal("Snook", sequence.Name);
@@ -987,7 +988,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasMin(111)
                 .HasMax(2222);
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
             ValidateSchemaNamedSpecificSequence(sequence);
         }
@@ -1004,7 +1005,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .HasMin(111)
                 .HasMax(2222);
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
             ValidateSchemaNamedSpecificSequence(sequence);
         }
@@ -1017,7 +1018,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             modelBuilder
                 .HasSequence<int>("Snook", "Tasty", b => b.IncrementsBy(11).StartsAt(1729).HasMin(111).HasMax(2222));
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
             ValidateSchemaNamedSpecificSequence(sequence);
         }
@@ -1030,7 +1031,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             modelBuilder
                 .HasSequence(typeof(int), "Snook", "Tasty", b => b.IncrementsBy(11).StartsAt(1729).HasMin(111).HasMax(2222));
 
-            var sequence = modelBuilder.Model.Relational().FindSequence("Snook", "Tasty");
+            var sequence = modelBuilder.Model.FindSequence("Snook", "Tasty");
 
             ValidateSchemaNamedSpecificSequence(sequence);
         }
@@ -1042,7 +1043,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var testMethod = typeof(TestDbFunctions).GetTypeInfo().GetDeclaredMethod(nameof(TestDbFunctions.MethodA));
             modelBuilder.HasDbFunction(testMethod);
 
-            var dbFunc = modelBuilder.Model.Relational().FindDbFunction(testMethod) as DbFunction;
+            var dbFunc = modelBuilder.Model.FindDbFunction(testMethod) as DbFunction;
 
             Assert.NotNull(dbFunc);
             Assert.Equal("MethodA", dbFunc.FunctionName);

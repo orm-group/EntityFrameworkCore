@@ -62,7 +62,8 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
         /// </summary>
         public virtual InternalModelBuilder Apply(InternalModelBuilder modelBuilder)
         {
-            modelBuilder.Relational(ConfigurationSource.Convention).HasMaxIdentifierLength(MaxIdentifierLength);
+            //modelBuilder.Relational(ConfigurationSource.Convention).HasMaxIdentifierLength(MaxIdentifierLength);
+            modelBuilder.Metadata.SetMaxIdentifierLength(MaxIdentifierLength);
             return modelBuilder;
         }
     }

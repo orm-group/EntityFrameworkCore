@@ -225,7 +225,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
             foreach (var property in mappedTypes.SelectMany(et => et.GetDeclaredProperties()))
             {
                 var propertyAnnotations = property.Relational();
-                var columnName = propertyAnnotations.ColumnName;
+                var columnName = propertyAnnotations.GetColumnName();
                 if (propertyMappings.TryGetValue(columnName, out var duplicateProperty))
                 {
                     var propertyStrategy = property.SqlServer().ValueGenerationStrategy;

@@ -20,7 +20,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasColumnName("MyNameIs")
                 .Metadata;
 
-            Assert.Equal("MyNameIs", property.Relational().ColumnName);
+            Assert.Equal("MyNameIs", property.Relational().GetColumnName());
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasColumnName("MyNameIs")
                 .Metadata;
 
-            Assert.Equal("MyNameIs", property.Relational().ColumnName);
+            Assert.Equal("MyNameIs", property.Relational().GetColumnName());
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasColumnType("nvarchar(DA)")
                 .Metadata;
 
-            Assert.Equal("nvarchar(DA)", property.Relational().ColumnType);
+            Assert.Equal("nvarchar(DA)", property.Relational().GetColumnType());
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasColumnType("nvarchar(DA)")
                 .Metadata;
 
-            Assert.Equal("nvarchar(DA)", property.Relational().ColumnType);
+            Assert.Equal("nvarchar(DA)", property.Relational().GetColumnType());
         }
 
         [Fact]
@@ -76,7 +76,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValueSql("VanillaCoke")
                 .Metadata;
 
-            Assert.Equal("VanillaCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("VanillaCoke", property.Relational().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -91,7 +91,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValueSql("VanillaCoke")
                 .Metadata;
 
-            Assert.Equal("VanillaCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("VanillaCoke", property.Relational().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -107,7 +107,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValueSql("VanillaCoke")
                 .Metadata;
 
-            Assert.Equal("VanillaCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("VanillaCoke", property.Relational().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -123,7 +123,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValueSql("VanillaCoke")
                 .Metadata;
 
-            Assert.Equal("VanillaCoke", property.Relational().DefaultValueSql);
+            Assert.Equal("VanillaCoke", property.Relational().GetDefaultValueSql());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -139,7 +139,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValue(valueString)
                 .Metadata;
 
-            Assert.Equal(valueString, property.Relational().DefaultValue);
+            Assert.Equal(valueString, property.Relational().GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -155,7 +155,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValue(valueString)
                 .Metadata;
 
-            Assert.Equal(valueString, property.Relational().DefaultValue);
+            Assert.Equal(valueString, property.Relational().GetDefaultValue());
             Assert.Equal(ValueGenerated.OnAdd, property.ValueGenerated);
         }
 
@@ -172,7 +172,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValue(valueString)
                 .Metadata;
 
-            Assert.Equal(valueString, property.Relational().DefaultValue);
+            Assert.Equal(valueString, property.Relational().GetDefaultValue());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -189,7 +189,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasDefaultValue(valueString)
                 .Metadata;
 
-            Assert.Equal(valueString, property.Relational().DefaultValue);
+            Assert.Equal(valueString, property.Relational().GetDefaultValue());
             Assert.Equal(ValueGenerated.Never, property.ValueGenerated);
         }
 
@@ -296,7 +296,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .HasName("Dexter")
                 .Metadata;
 
-            Assert.Equal("Dexter", index.Relational().Name);
+            Assert.Equal("Dexter", index.Relational().GetName());
         }
 
         [Fact]
@@ -309,7 +309,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .ToTable("Custardizer")
                 .Metadata;
 
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
         }
 
         [Fact]
@@ -322,7 +322,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Builders
                 .ToTable("Custardizer")
                 .Metadata;
 
-            Assert.Equal("Custardizer", entityType.Relational().TableName);
+            Assert.Equal("Custardizer", entityType.Relational().GetTableName());
         }
 
         protected virtual ModelBuilder CreateConventionModelBuilder()

@@ -136,10 +136,10 @@ namespace Microsoft.EntityFrameworkCore
 
             Validate(modelBuilder.Model);
 
-            Assert.Equal("IX_Animal_Name", index1.Relational().Name);
-            Assert.Equal("IX_Animal_Name", index1.SqlServer().Name);
-            Assert.Equal("IX_Animal_Name1", index2.Relational().Name);
-            Assert.Equal("IX_Animal_Name1", index2.SqlServer().Name);
+            Assert.Equal("IX_Animal_Name", index1.Relational().GetName());
+            Assert.Equal("IX_Animal_Name", index1.SqlServer().GetName());
+            Assert.Equal("IX_Animal_Name1", index2.Relational().GetName());
+            Assert.Equal("IX_Animal_Name1", index2.SqlServer().GetName());
         }
 
         [Fact]

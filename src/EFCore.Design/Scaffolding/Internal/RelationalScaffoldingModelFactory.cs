@@ -194,7 +194,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
 
             if (!string.IsNullOrEmpty(databaseModel.DatabaseName))
             {
-                modelBuilder.Model.Scaffolding().DatabaseName = databaseModel.DatabaseName;
+                modelBuilder.Model.Scaffolding().SetDatabaseName(databaseModel.DatabaseName);
             }
 
             VisitSequences(modelBuilder, databaseModel.Sequences);
@@ -326,7 +326,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
             var builder = modelBuilder.Entity(entityTypeName);
 
             var dbSetName = GetDbSetName(table);
-            builder.Metadata.Scaffolding().DbSetName = dbSetName;
+            builder.Metadata.Scaffolding().SetDbSetName(dbSetName);
 
             builder.ToTable(table.Name, table.Schema);
 
@@ -341,7 +341,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
 
                 var model = modelBuilder.Model;
                 model.RemoveEntityType(entityTypeName);
-                model.Scaffolding().EntityTypeErrors.Add(entityTypeName, errorMessage);
+                model.Scaffolding().GetEntityTypeErrors().Add(entityTypeName, errorMessage);
                 return null;
             }
 
@@ -784,7 +784,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
                         _reporter.WriteWarning(
                             DesignStrings.ForeignKeyPrincipalEndContainsNullableColumns(
                                 foreignKey.DisplayName(),
-                                index.Relational().Name,
+                                index.Relational().GetName(),
                                 nullablePrincipalProperties.Select(tuple => tuple.column.DisplayName()).ToList()
                                     .Aggregate((a, b) => a + "," + b)));
 

@@ -61,11 +61,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
                 return valueGenerated;
             }
 
-            var relationalProperty = property.Relational();
-            return relationalProperty.ComputedColumnSql != null
+            return property.GetComputedColumnSql() != null
                 ? ValueGenerated.OnAddOrUpdate
-                : relationalProperty.DefaultValue != null
-                  || relationalProperty.DefaultValueSql != null
+                : property.GetDefaultValue() != null
+                  || property.GetDefaultValueSql() != null
                     ? ValueGenerated.OnAdd
                     : (ValueGenerated?)null;
         }

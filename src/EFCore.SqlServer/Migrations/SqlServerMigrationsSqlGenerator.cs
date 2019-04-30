@@ -1538,7 +1538,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 .OfType<CreateIndexOperation>().ToList();
             foreach (var index in property.DeclaringEntityType.GetIndexes().Concat(property.DeclaringEntityType.GetDerivedTypes().SelectMany(et => et.GetDeclaredIndexes())))
             {
-                var indexName = index.Relational().Name;
+                var indexName = index.Relational().GetName();
                 if (createIndexOperations.Any(o => o.Name == indexName))
                 {
                     continue;
@@ -1574,9 +1574,9 @@ namespace Microsoft.EntityFrameworkCore.Migrations
             {
                 var operation = new DropIndexOperation
                 {
-                    Schema = index.DeclaringEntityType.Relational().Schema,
-                    Table = index.DeclaringEntityType.Relational().TableName,
-                    Name = index.Relational().Name
+                    Schema = index.DeclaringEntityType.Relational().GetSchema(),
+                    Table = index.DeclaringEntityType.Relational().GetTableName(),
+                    Name = index.Relational().GetName()
                 };
                 operation.AddAnnotations(_migrationsAnnotations.ForRemove(index));
 
@@ -1602,11 +1602,11 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 var operation = new CreateIndexOperation
                 {
                     IsUnique = index.IsUnique,
-                    Name = index.Relational().Name,
-                    Schema = index.DeclaringEntityType.Relational().Schema,
-                    Table = index.DeclaringEntityType.Relational().TableName,
-                    Columns = index.Properties.Select(p => p.Relational().ColumnName).ToArray(),
-                    Filter = index.Relational().Filter
+                    Name = index.Relational().GetName(),
+                    Schema = index.DeclaringEntityType.Relational().GetSchema(),
+                    Table = index.DeclaringEntityType.Relational().GetTableName(),
+                    Columns = index.Properties.Select(p => p.Relational().GetColumnName()).ToArray(),
+                    Filter = index.Relational().GetFilter()
                 };
                 operation.AddAnnotations(_migrationsAnnotations.For(index));
 

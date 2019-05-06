@@ -63,7 +63,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         private InternalEntityTypeBuilder Entity(
             in TypeIdentity type, ConfigurationSource configurationSource, bool? shouldBeOwned)
         {
-            if (IsIgnored(type, configurationSource))
+            if (Metadata.IsIgnored(type, configurationSource))
             {
                 return null;
             }
@@ -140,7 +140,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
             EntityType definingEntityType,
             ConfigurationSource configurationSource)
         {
-            if (IsIgnored(type, configurationSource))
+            if (Metadata.IsIgnored(type, configurationSource))
             {
                 return null;
             }
@@ -208,7 +208,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
         public virtual IConventionOwnedEntityTypeBuilder Owned(
             [NotNull] Type type, ConfigurationSource configurationSource)
         {
-            if (IsIgnored(type, configurationSource))
+            if (Metadata.IsIgnored(type, configurationSource))
             {
                 return null;
             }
@@ -254,36 +254,6 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
 
         private bool ShouldBeOwnedType(in TypeIdentity type)
             => type.Type != null && Metadata.ShouldBeOwned(type.Type);
-
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public virtual bool IsIgnored([NotNull] Type type, ConfigurationSource configurationSource)
-            => IsIgnored(new TypeIdentity(type, Metadata), configurationSource);
-
-        /// <summary>
-        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
-        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
-        ///     any release. You should only use it directly in your code with extreme caution and knowing that
-        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
-        /// </summary>
-        public virtual bool IsIgnored([NotNull] string name, ConfigurationSource configurationSource)
-            => IsIgnored(new TypeIdentity(name), configurationSource);
-
-        private bool IsIgnored(in TypeIdentity type, ConfigurationSource configurationSource)
-        {
-            if (configurationSource == ConfigurationSource.Explicit)
-            {
-                return false;
-            }
-
-            var ignoredConfigurationSource = Metadata.FindIgnoredConfigurationSource(type.Name);
-            return ignoredConfigurationSource.HasValue
-                   && ignoredConfigurationSource.Value.Overrides(configurationSource);
-        }
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
@@ -562,10 +532,10 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
             => Owned(type, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);
 
         bool IConventionModelBuilder.IsIgnored(Type type, bool fromDataAnnotation)
-            => IsIgnored(type, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);
+            => Metadata.IsIgnored(type, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);
 
         bool IConventionModelBuilder.IsIgnored(string name, bool fromDataAnnotation)
-            => IsIgnored(name, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);
+            => Metadata.IsIgnored(name, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);
 
         IConventionModelBuilder IConventionModelBuilder.Ignore(Type type, bool fromDataAnnotation)
             => Ignore(type, fromDataAnnotation ? ConfigurationSource.DataAnnotation : ConfigurationSource.Convention);

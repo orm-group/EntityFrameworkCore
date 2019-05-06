@@ -148,20 +148,6 @@ namespace Microsoft.EntityFrameworkCore
                 .SetChangeTrackingStrategy(changeTrackingStrategy, ConfigurationSource.Explicit);
 
         /// <summary>
-        ///     Returns a value indicating whether the entity types matching the given name should be configured
-        ///     as owned types when discovered.
-        /// </summary>
-        /// <param name="model"> The model to get the value from. </param>
-        /// <param name="clrType"> The type of the entity type that might be owned. </param>
-        /// <returns>
-        ///     <c>true</c> if a matching entity type should be configured as owned when discovered,
-        ///     <c>false</c> otherwise.
-        /// </returns>
-        public static bool ShouldBeOwned([NotNull] this IMutableModel model, [NotNull] Type clrType)
-            => Check.NotNull(model, nameof(model)).AsModel().ShouldBeOwned(
-                Check.NotNull(clrType, nameof(clrType)));
-
-        /// <summary>
         ///     Marks the given entity type as owned, indicating that when discovered matching entity types
         ///     should be configured as owned.
         /// </summary>

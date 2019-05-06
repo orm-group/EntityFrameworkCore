@@ -36,7 +36,7 @@ namespace Microsoft.EntityFrameworkCore
             modelBuilder.Entity("Dummy");
 
             Assert.Equal(
-                CoreStrings.ShadowEntity("Dummy"),
+                CoreStrings.EntityRequiresKey("Dummy"),
                 Assert.Throws<InvalidOperationException>
                     (() => modelBuilder.FinalizeModel()).Message);
         }

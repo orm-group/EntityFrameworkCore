@@ -42,10 +42,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         }
 
         public void SetPrimaryKey(IMutableEntityType entityType)
-        {
-            var property = entityType.AddProperty("Id", typeof(int));
-            entityType.SetPrimaryKey(property);
-        }
+            => entityType.SetPrimaryKey(entityType.AddProperty("Id", typeof(int)));
 
         protected IMutableForeignKey CreateForeignKey(IMutableKey dependentKey, IMutableKey principalKey)
             => CreateForeignKey(dependentKey.DeclaringEntityType, dependentKey.Properties, principalKey);
@@ -184,7 +181,8 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
 
         protected virtual void VerifyError(string expectedMessage, IModel model)
         {
-            Assert.Equal(expectedMessage, Assert.Throws<InvalidOperationException>(() => Validate(model)).Message);
+            var message = Assert.Throws<InvalidOperationException>(() => Validate(model)).Message;
+            Assert.Equal(expectedMessage, message);
         }
 
         protected virtual void Validate(IModel model) => ((Model)model).FinalizeModel();

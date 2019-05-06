@@ -45,7 +45,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         ///     Gets a value indicating whether the entity type has no keys.
         ///     If <c>true</c> it will only be usable for queries.
         /// </summary>
-        bool IsKeyless { get; }
+        new bool IsKeyless { get; }
 
         /// <summary>
         ///     Sets the base type of this entity type. Returns <c>null</c> if this is not a derived type in an inheritance hierarchy.

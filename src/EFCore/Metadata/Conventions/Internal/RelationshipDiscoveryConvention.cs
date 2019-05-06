@@ -74,7 +74,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
         private InternalEntityTypeBuilder DiscoverRelationships(InternalEntityTypeBuilder entityTypeBuilder)
         {
             if (!entityTypeBuilder.Metadata.HasClrType()
-                || entityTypeBuilder.ModelBuilder.IsIgnored(entityTypeBuilder.Metadata.ClrType, ConfigurationSource.Convention))
+                || entityTypeBuilder.ModelBuilder.Metadata.IsIgnored(entityTypeBuilder.Metadata.ClrType, ConfigurationSource.Convention))
             {
                 return entityTypeBuilder;
             }
@@ -928,7 +928,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal
             string navigationName,
             MemberInfo propertyInfo)
             => (targetEntityTypeBuilder.Metadata.Builder == null
-                && sourceEntityTypeBuilder.ModelBuilder.IsIgnored(
+                && sourceEntityTypeBuilder.ModelBuilder.Metadata.IsIgnored(
                     targetEntityTypeBuilder.Metadata.Name, ConfigurationSource.Convention))
                || !IsCandidateNavigationProperty(sourceEntityTypeBuilder, navigationName, propertyInfo)
                || Apply(sourceEntityTypeBuilder.Metadata, propertyInfo);

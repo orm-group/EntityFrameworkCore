@@ -25,6 +25,11 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         {
             var model = CreateConventionlessModelBuilder().Model;
             var entityTypeA = model.AddEntityType(typeof(A));
+            entityTypeA.AddProperty(nameof(A.P0), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P1), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P2), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P3), typeof(int?));
+
             SetPrimaryKey(entityTypeA);
             var entityTypeD = model.AddEntityType(typeof(D));
             SetBaseType(entityTypeD, entityTypeA);
@@ -38,9 +43,10 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_shadow_entities()
         {
             var model = CreateConventionlessModelBuilder().Model;
-            model.AddEntityType("A");
+            var entityType = model.AddEntityType("BewareTheShadows");
+            SetPrimaryKey(entityType);
 
-            VerifyError(CoreStrings.ShadowEntity("A"), model);
+            VerifyError(CoreStrings.ShadowEntity("BewareTheShadows"), model);
         }
 
         [Fact]
@@ -70,15 +76,23 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_shadow_key_referenced_by_foreign_key_by_convention()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
+
             var dependentEntityBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             dependentEntityBuilder.Property("Id", typeof(int), ConfigurationSource.Convention);
+            dependentEntityBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            dependentEntityBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            dependentEntityBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             dependentEntityBuilder.PrimaryKey(
                 new List<string>
                 {
                     "Id"
                 }, ConfigurationSource.Convention);
+
             var principalEntityBuilder = modelBuilder.Entity(typeof(ReferencedEntity), ConfigurationSource.Convention);
             principalEntityBuilder.Property("Id", typeof(int), ConfigurationSource.Convention);
+            principalEntityBuilder.Ignore(nameof(ReferencedEntity.SampleEntityId), ConfigurationSource.Explicit);
+
             principalEntityBuilder.PrimaryKey(
                 new List<string>
                 {
@@ -87,6 +101,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
 
             dependentEntityBuilder.Property("Foo", typeof(string), ConfigurationSource.Convention);
             principalEntityBuilder.Property("ReferencedFoo", typeof(string), ConfigurationSource.Convention);
+
             dependentEntityBuilder.HasRelationship(
                 principalEntityBuilder.Metadata,
                 dependentEntityBuilder.GetOrCreateProperties(
@@ -109,10 +124,18 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         [Fact]
         public virtual void Detects_a_null_primary_key()
         {
-            var model = CreateConventionlessModelBuilder().Model;
-            model.AddEntityType(typeof(A));
+            var builder = CreateConventionlessModelBuilder();
+            builder.Entity<A>(
+                b =>
+                {
+                    b.Property(e => e.Id);
+                    b.Property(e => e.P0);
+                    b.Property(e => e.P1);
+                    b.Property(e => e.P2);
+                    b.Property(e => e.P3);
+                });
 
-            VerifyError(CoreStrings.EntityRequiresKey(nameof(A)), model);
+            VerifyError(CoreStrings.EntityRequiresKey(nameof(A)), builder.Model);
         }
 
         [Fact]
@@ -121,6 +144,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var model = CreateConventionlessModelBuilder().Model;
             var entityTypeA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityTypeA);
+            AddProperties(entityTypeA);
             entityTypeA.FindPrimaryKey().Properties.Single().ValueGenerated = ValueGenerated.OnUpdate;
 
             VerifyError(CoreStrings.MutableKeyProperty(nameof(A.Id)), model);
@@ -132,6 +156,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var model = CreateConventionlessModelBuilder().Model;
             var entityTypeA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityTypeA);
+            AddProperties(entityTypeA);
             entityTypeA.FindPrimaryKey().Properties.Single().ValueGenerated = ValueGenerated.OnAddOrUpdate;
 
             VerifyError(CoreStrings.MutableKeyProperty(nameof(A.Id)), model);
@@ -224,15 +249,17 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         }
 
         [Fact]
-        public virtual void Pases_on_double_reference_to_root_principal_property()
+        public virtual void Passes_on_double_reference_to_root_principal_property()
         {
             var model = CreateConventionlessModelBuilder().Model;
             var entityA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityA);
+            AddProperties(entityA);
             var keyA1 = CreateKey(entityA);
             var keyA2 = CreateKey(entityA, startingPropertyIndex: 0, propertyCount: 2);
             var entityB = model.AddEntityType(typeof(B));
             SetPrimaryKey(entityB);
+            AddProperties(entityB);
             var keyB1 = CreateKey(entityB);
             var keyB2 = CreateKey(entityB, startingPropertyIndex: 0, propertyCount: 2);
 
@@ -243,17 +270,19 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         }
 
         [Fact]
-        public virtual void Pases_on_diamond_path_to_root_principal_property()
+        public virtual void Passes_on_diamond_path_to_root_principal_property()
         {
             var model = CreateConventionlessModelBuilder().Model;
             var entityA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityA);
+            AddProperties(entityA);
             var keyA1 = CreateKey(entityA);
             var keyA2 = CreateKey(entityA, startingPropertyIndex: 0, propertyCount: 2);
             var keyA3 = CreateKey(entityA);
             var keyA4 = CreateKey(entityA, startingPropertyIndex: 2, propertyCount: 2);
             var entityB = model.AddEntityType(typeof(B));
             SetPrimaryKey(entityB);
+            AddProperties(entityB);
             var keyB1 = CreateKey(entityB);
             var keyB2 = CreateKey(entityB, startingPropertyIndex: 1, propertyCount: 2);
 
@@ -267,11 +296,12 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         }
 
         [Fact]
-        public virtual void Pases_on_correct_inheritance()
+        public virtual void Passes_on_correct_inheritance()
         {
             var model = CreateConventionlessModelBuilder().Model;
             var entityA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityA);
+            AddProperties(entityA);
             var entityD = model.AddEntityType(typeof(D));
             SetBaseType(entityD, entityA);
 
@@ -284,6 +314,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var model = CreateConventionlessModelBuilder().Model;
             var entityA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityA);
+            AddProperties(entityA);
             var entityD = model.AddEntityType(typeof(D));
             SetBaseType(entityD, entityA);
             var entityF = model.AddEntityType(typeof(F));
@@ -298,6 +329,8 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var model = CreateConventionlessModelBuilder().Model;
             var entityA = model.AddEntityType(typeof(A));
             SetPrimaryKey(entityA);
+            AddProperties(entityA);
+
             var entityAbstract = model.AddEntityType(typeof(Abstract));
             SetBaseType(entityAbstract, entityA);
 
@@ -310,6 +343,8 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var model = CreateConventionlessModelBuilder().Model;
             var entityAbstract = model.AddEntityType(typeof(Abstract));
             SetPrimaryKey(entityAbstract);
+            AddProperties(entityAbstract);
+
             var entityGeneric = model.AddEntityType(typeof(Generic<>));
             SetBaseType(entityGeneric, entityAbstract);
 
@@ -317,15 +352,21 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         }
 
         [Fact]
-        public virtual void Pases_on_valid_owned_entity_types()
+        public virtual void Passes_on_valid_owned_entity_types()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(SampleEntity.ReferencedEntity), ConfigurationSource.Convention);
+
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
             ownedTypeBuilder.PrimaryKey(ownershipBuilder.Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(ReferencedEntity.Id), ConfigurationSource.Explicit);
 
             Validate(modelBuilder.Metadata);
         }
@@ -336,6 +377,9 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
 
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(AnotherSampleEntity), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(AnotherSampleEntity.Id) }, ConfigurationSource.Convention);
@@ -364,16 +408,25 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_entity_type_with_multiple_ownerships()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
+
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(SampleEntity.ReferencedEntity), ConfigurationSource.Convention);
+
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
             ownedTypeBuilder.PrimaryKey(ownershipBuilder.Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
 
             ownedTypeBuilder.HasRelationship(
                     entityTypeBuilder.Metadata, (string)null, null, ConfigurationSource.Convention, setTargetAsPrincipal: true)
                 .Metadata.IsOwnership = true;
+
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.Id), ConfigurationSource.Explicit);
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.SampleEntityId), ConfigurationSource.Explicit);
 
             VerifyError(
                 CoreStrings.MultipleOwnerships(nameof(ReferencedEntity)),
@@ -386,9 +439,13 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
 
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(AnotherSampleEntity), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(AnotherSampleEntity.Id) }, ConfigurationSource.Convention);
+            anotherEntityTypeBuilder.Ignore(nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Explicit);
 
             var anotherOwnershipBuilder = anotherEntityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Convention);
@@ -418,6 +475,10 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(SampleEntity.ReferencedEntity), ConfigurationSource.Convention);
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
@@ -425,6 +486,7 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
 
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(AnotherSampleEntity), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(AnotherSampleEntity.Id) }, ConfigurationSource.Convention);
+            anotherEntityTypeBuilder.Ignore(nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Explicit);
 
             var anotherOwnershipBuilder = anotherEntityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Convention);
@@ -443,14 +505,24 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_principal_owned_entity_type()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
+
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(SampleEntity.ReferencedEntity), ConfigurationSource.Convention);
+
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.Id), ConfigurationSource.Explicit);
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.SampleEntityId), ConfigurationSource.Explicit);
             ownedTypeBuilder.PrimaryKey(ownershipBuilder.Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
+
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(AnotherSampleEntity), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(AnotherSampleEntity.Id) }, ConfigurationSource.Convention);
+
             anotherEntityTypeBuilder.HasRelationship(
                 ownedTypeBuilder.Metadata, nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Convention,
                 setTargetAsPrincipal: true);
@@ -467,14 +539,24 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_non_owner_navigation_to_owned_entity_type()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
+
             var entityTypeBuilder = modelBuilder.Entity(typeof(SampleEntity), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(SampleEntity.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Number), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.Name), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(SampleEntity.OtherSamples), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(
                 typeof(ReferencedEntity), nameof(SampleEntity.ReferencedEntity), ConfigurationSource.Convention);
+
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
             ownedTypeBuilder.PrimaryKey(ownershipBuilder.Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.Id), ConfigurationSource.Explicit);
+            ownedTypeBuilder.Ignore(nameof(ReferencedEntity.SampleEntityId), ConfigurationSource.Explicit);
+
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(AnotherSampleEntity), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(AnotherSampleEntity.Id) }, ConfigurationSource.Convention);
+
             anotherEntityTypeBuilder.HasRelationship(
                     ownedTypeBuilder.Metadata, nameof(AnotherSampleEntity.ReferencedEntity), ConfigurationSource.Convention)
                 .HasEntityTypes(anotherEntityTypeBuilder.Metadata, ownedTypeBuilder.Metadata, ConfigurationSource.Convention);
@@ -489,13 +571,27 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_derived_owned_entity_type()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
+
             var entityTypeBuilder = modelBuilder.Entity(typeof(B), ConfigurationSource.Convention);
             entityTypeBuilder.PrimaryKey(new[] { nameof(B.Id) }, ConfigurationSource.Convention);
+            entityTypeBuilder.Property(nameof(B.P0), typeof(int?), ConfigurationSource.Explicit);
+            entityTypeBuilder.Property(nameof(B.P1), typeof(int?), ConfigurationSource.Explicit);
+            entityTypeBuilder.Property(nameof(B.P2), typeof(int?), ConfigurationSource.Explicit);
+            entityTypeBuilder.Property(nameof(B.P3), typeof(int?), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(B.AnotherA), ConfigurationSource.Explicit);
+            entityTypeBuilder.Ignore(nameof(B.ManyAs), ConfigurationSource.Explicit);
+
             var ownershipBuilder = entityTypeBuilder.HasOwnership(typeof(D), nameof(B.A), ConfigurationSource.Convention);
             var ownedTypeBuilder = ownershipBuilder.Metadata.DeclaringEntityType.Builder;
             ownedTypeBuilder.PrimaryKey(ownershipBuilder.Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
+
             var anotherEntityTypeBuilder = modelBuilder.Entity(typeof(A), ConfigurationSource.Convention);
             anotherEntityTypeBuilder.PrimaryKey(new[] { nameof(A.Id) }, ConfigurationSource.Convention);
+            anotherEntityTypeBuilder.Property(nameof(A.P0), typeof(int?), ConfigurationSource.Explicit);
+            anotherEntityTypeBuilder.Property(nameof(A.P1), typeof(int?), ConfigurationSource.Explicit);
+            anotherEntityTypeBuilder.Property(nameof(A.P2), typeof(int?), ConfigurationSource.Explicit);
+            anotherEntityTypeBuilder.Property(nameof(A.P3), typeof(int?), ConfigurationSource.Explicit);
+
             ownedTypeBuilder.HasBaseType(typeof(A), ConfigurationSource.Convention);
 
             VerifyError(CoreStrings.OwnedDerivedType(nameof(D)), modelBuilder.Metadata);
@@ -505,7 +601,13 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
         public virtual void Detects_owned_entity_type_without_ownership()
         {
             var modelBuilder = CreateConventionlessModelBuilder().GetInfrastructure();
-            modelBuilder.Entity(typeof(A), ConfigurationSource.Convention);
+            var aBuilder = modelBuilder.Entity(typeof(A), ConfigurationSource.Convention);
+            aBuilder.Ignore(nameof(A.Id), ConfigurationSource.Explicit);
+            aBuilder.Ignore(nameof(A.P0), ConfigurationSource.Explicit);
+            aBuilder.Ignore(nameof(A.P1), ConfigurationSource.Explicit);
+            aBuilder.Ignore(nameof(A.P2), ConfigurationSource.Explicit);
+            aBuilder.Ignore(nameof(A.P3), ConfigurationSource.Explicit);
+
             modelBuilder.Owned(typeof(A), ConfigurationSource.Convention);
 
             VerifyError(CoreStrings.OwnerlessOwnedType(nameof(A)), modelBuilder.Metadata);
@@ -906,6 +1008,14 @@ namespace Microsoft.EntityFrameworkCore.Infrastructure
                         nameof(SampleEntity),
                         "{'SampleEntityId'}"),
                 modelBuilder.Model);
+        }
+
+        private static void AddProperties(IMutableEntityType entityTypeA)
+        {
+            entityTypeA.AddProperty(nameof(A.P0), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P1), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P2), typeof(int?));
+            entityTypeA.AddProperty(nameof(A.P3), typeof(int?));
         }
 
         // INotify interfaces not really implemented; just marking the classes to test metadata construction

@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -17,6 +18,51 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
     /// </summary>
     public static class ModelExtensions
     {
+        /// <summary>
+        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
+        ///     any release. You should only use it directly in your code with extreme caution and knowing that
+        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
+        /// </summary>
+        public static  bool IsIgnored(
+            [NotNull] this IModel model,
+            [NotNull] Type type,
+            ConfigurationSource configurationSource)
+            => model.IsIgnored(new TypeIdentity(type, model.AsModel()), configurationSource);
+
+        /// <summary>
+        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
+        ///     any release. You should only use it directly in your code with extreme caution and knowing that
+        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
+        /// </summary>
+        public static  bool IsIgnored(
+            [NotNull] this IModel model,
+            [NotNull] string name,
+            ConfigurationSource configurationSource)
+            => model.IsIgnored(new TypeIdentity(name), configurationSource);
+
+        /// <summary>
+        ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
+        ///     the same compatibility standards as public APIs. It may be changed or removed without notice in
+        ///     any release. You should only use it directly in your code with extreme caution and knowing that
+        ///     doing so can result in application failures when updating to a new Entity Framework Core release.
+        /// </summary>
+        public static bool IsIgnored(
+            [NotNull] this IModel model,
+            in TypeIdentity type,
+            ConfigurationSource configurationSource)
+        {
+            if (configurationSource == ConfigurationSource.Explicit)
+            {
+                return false;
+            }
+
+            var ignoredConfigurationSource = model.AsModel().FindIgnoredConfigurationSource(type.Name);
+            return ignoredConfigurationSource.HasValue
+                   && ignoredConfigurationSource.Value.Overrides(configurationSource);
+        }
+
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to
         ///     the same compatibility standards as public APIs. It may be changed or removed without notice in

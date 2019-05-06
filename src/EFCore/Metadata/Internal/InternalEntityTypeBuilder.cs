@@ -2520,7 +2520,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
                     }
                     else
                     {
-                        if (ModelBuilder.IsIgnored(targetTypeName, configurationSource))
+                        if (ModelBuilder.Metadata.IsIgnored(targetTypeName, configurationSource))
                         {
                             return null;
                         }

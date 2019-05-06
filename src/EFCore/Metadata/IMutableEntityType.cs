@@ -33,7 +33,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         ///     Gets or sets a value indicating whether the entity type has no keys.
         ///     If set to <c>true</c> it will only be usable for queries.
         /// </summary>
-        bool IsKeyless { get; set; }
+        new bool IsKeyless { get; set; }
 
         /// <summary>
         ///     Sets the primary key for this entity.

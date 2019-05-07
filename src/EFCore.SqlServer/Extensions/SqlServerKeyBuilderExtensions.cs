@@ -23,7 +23,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(keyBuilder, nameof(keyBuilder));
 
-            keyBuilder.Metadata.SqlServer().IsClustered = clustered;
+            keyBuilder.Metadata.SqlServer().SetSqlServerIsClustered(clustered);
 
             return keyBuilder;
         }

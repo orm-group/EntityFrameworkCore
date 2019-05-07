@@ -38,11 +38,9 @@ namespace Microsoft.EntityFrameworkCore.Metadata
         ///     Gets or sets whether or not the key is clustered, or <c>null</c> if clustering has not
         ///     been specified.
         /// </summary>
-        public virtual bool? IsClustered
-        {
-            get => (bool?)Annotations.Metadata[SqlServerAnnotationNames.Clustered] ?? DefaultIsClustered;
-            set => SetIsClustered(value);
-        }
+        public virtual void SetSqlServerIsClustered(bool? value) => SetIsClustered(value);
+
+        public virtual bool? GetSqlServerIsClustered() => (bool?)Annotations.Metadata[SqlServerAnnotationNames.Clustered] ?? DefaultIsClustered;
 
         private bool? DefaultIsClustered
         {
@@ -51,7 +49,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 var sharedTablePrincipalPrimaryKeyProperty = Key.Properties[0].FindSharedTableRootPrimaryKeyProperty();
                 if (sharedTablePrincipalPrimaryKeyProperty != null)
                 {
-                    return sharedTablePrincipalPrimaryKeyProperty.FindContainingPrimaryKey().SqlServer().IsClustered;
+                    return sharedTablePrincipalPrimaryKeyProperty.FindContainingPrimaryKey().SqlServer().GetSqlServerIsClustered();
                 }
 
                 return null;

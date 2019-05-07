@@ -23,16 +23,16 @@ namespace Microsoft.EntityFrameworkCore.Metadata
 
             Assert.True(
                 builder.SqlServer(ConfigurationSource.Convention).ValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo));
-            Assert.Equal(SqlServerValueGenerationStrategy.SequenceHiLo, builder.Metadata.SqlServer().ValueGenerationStrategy);
+            Assert.Equal(SqlServerValueGenerationStrategy.SequenceHiLo, builder.Metadata.SqlServer().GetSqlServerValueGenerationStrategy());
 
             Assert.True(
                 builder.SqlServer(ConfigurationSource.DataAnnotation)
                     .ValueGenerationStrategy(SqlServerValueGenerationStrategy.IdentityColumn));
-            Assert.Equal(SqlServerValueGenerationStrategy.IdentityColumn, builder.Metadata.SqlServer().ValueGenerationStrategy);
+            Assert.Equal(SqlServerValueGenerationStrategy.IdentityColumn, builder.Metadata.SqlServer().GetSqlServerValueGenerationStrategy());
 
             Assert.False(
                 builder.SqlServer(ConfigurationSource.Convention).ValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo));
-            Assert.Equal(SqlServerValueGenerationStrategy.IdentityColumn, builder.Metadata.SqlServer().ValueGenerationStrategy);
+            Assert.Equal(SqlServerValueGenerationStrategy.IdentityColumn, builder.Metadata.SqlServer().GetSqlServerValueGenerationStrategy());
 
             Assert.Equal(
                 1, builder.Metadata.GetAnnotations().Count(
@@ -66,13 +66,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
                 .Property(typeof(int), "Id", ConfigurationSource.Convention);
 
             Assert.True(propertyBuilder.SqlServer(ConfigurationSource.Convention).HiLoSequenceName("Splew"));
-            Assert.Equal("Splew", propertyBuilder.Metadata.SqlServer().HiLoSequenceName);
+            Assert.Equal("Splew", propertyBuilder.Metadata.SqlServer().GetForSqlServerHiLoSequenceName());
 
             Assert.True(propertyBuilder.SqlServer(ConfigurationSource.DataAnnotation).HiLoSequenceName("Splow"));
-            Assert.Equal("Splow", propertyBuilder.Metadata.SqlServer().HiLoSequenceName);
+            Assert.Equal("Splow", propertyBuilder.Metadata.SqlServer().GetForSqlServerHiLoSequenceName());
 
             Assert.False(propertyBuilder.SqlServer(ConfigurationSource.Convention).HiLoSequenceName("Splod"));
-            Assert.Equal("Splow", propertyBuilder.Metadata.SqlServer().HiLoSequenceName);
+            Assert.Equal("Splow", propertyBuilder.Metadata.SqlServer().GetForSqlServerHiLoSequenceName());
 
             Assert.Equal(
                 1, propertyBuilder.Metadata.GetAnnotations().Count(
@@ -124,13 +124,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var keyBuilder = entityTypeBuilder.HasKey(new[] { idProperty.Name }, ConfigurationSource.Convention);
 
             Assert.True(keyBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
-            Assert.True(keyBuilder.Metadata.SqlServer().IsClustered);
+            Assert.True(keyBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.True(keyBuilder.SqlServer(ConfigurationSource.DataAnnotation).IsClustered(false));
-            Assert.False(keyBuilder.Metadata.SqlServer().IsClustered);
+            Assert.False(keyBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.False(keyBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
-            Assert.False(keyBuilder.Metadata.SqlServer().IsClustered);
+            Assert.False(keyBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.Equal(
                 1, keyBuilder.Metadata.GetAnnotations().Count(
@@ -146,13 +146,13 @@ namespace Microsoft.EntityFrameworkCore.Metadata
             var indexBuilder = entityTypeBuilder.HasIndex(new[] { "Id" }, ConfigurationSource.Convention);
 
             Assert.True(indexBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
-            Assert.True(indexBuilder.Metadata.SqlServer().IsClustered);
+            Assert.True(indexBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.True(indexBuilder.SqlServer(ConfigurationSource.DataAnnotation).IsClustered(false));
-            Assert.False(indexBuilder.Metadata.SqlServer().IsClustered);
+            Assert.False(indexBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.False(indexBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(true));
-            Assert.False(indexBuilder.Metadata.SqlServer().IsClustered);
+            Assert.False(indexBuilder.Metadata.SqlServer().GetSqlServerIsClustered());
 
             Assert.Equal(
                 1, indexBuilder.Metadata.GetAnnotations().Count(

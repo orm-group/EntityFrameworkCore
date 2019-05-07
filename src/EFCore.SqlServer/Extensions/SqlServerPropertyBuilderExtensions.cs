@@ -47,8 +47,8 @@ namespace Microsoft.EntityFrameworkCore
 
             GetSqlServerInternalBuilder(propertyBuilder).ValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo);
 
-            property.SqlServer().HiLoSequenceName = name;
-            property.SqlServer().HiLoSequenceSchema = schema;
+            property.SqlServer().SetSqlServerHiLoSequenceName(name);
+            property.SqlServer().SetSqlServerHiLoSequenceSchema(schema);
 
             return propertyBuilder;
         }
@@ -106,7 +106,53 @@ namespace Microsoft.EntityFrameworkCore
             int increment = 1)
             => (PropertyBuilder<TProperty>)UseSqlServerIdentityColumn((PropertyBuilder)propertyBuilder, seed, increment);
 
-        private static SqlServerPropertyBuilderAnnotations GetSqlServerInternalBuilder(PropertyBuilder propertyBuilder)
-            => propertyBuilder.GetInfrastructure<InternalPropertyBuilder>().SqlServer(ConfigurationSource.Explicit);
+        /// <summary>
+        ///     Checks whether or not it is valid to set the given <see cref="SqlServerValueGenerationStrategy" />
+        ///     for the property.
+        /// </summary>
+        /// <param name="value"> The strategy to check. </param>
+        /// <returns> <c>True</c> if it is valid to set; <c>false</c> otherwise. </returns>
+        protected virtual bool CanSetValueGenerationStrategy(SqlServerValueGenerationStrategy? value)
+        {
+            if (GetSqlServerValueGenerationStrategy(fallbackToModel: false) == value)
+            {
+                return true;
+            }
+
+            if (!Annotations.CanSetAnnotation(SqlServerAnnotationNames.ValueGenerationStrategy, value))
+            {
+                return false;
+            }
+
+            if (ShouldThrowOnConflict)
+            {
+                if (GetDefaultValue(false) != null)
+                {
+                    throw new InvalidOperationException(
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetForSqlServerValueGenerationStrategy()), Property.Name, nameof(GetDefaultValue())));
+                }
+
+                if (GetDefaultValueSql(false) != null)
+                {
+                    throw new InvalidOperationException(
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetForSqlServerValueGenerationStrategy()), Property.Name, nameof(GetDefaultValueSql())));
+                }
+
+                if (GetComputedColumnSql(false) != null)
+                {
+                    throw new InvalidOperationException(
+                        RelationalStrings.ConflictingColumnServerGeneration(nameof(GetForSqlServerValueGenerationStrategy()), Property.Name, nameof(GetComputedColumnSql())));
+                }
+            }
+            else if (value != null
+                     && (!CanSetDefaultValue(null)
+                         || !CanSetDefaultValueSql(null)
+                         || !CanSetComputedColumnSql(null)))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

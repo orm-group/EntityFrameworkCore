@@ -51,7 +51,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
                 foreach (var property in entityType.GetDeclaredProperties())
                 {
                     property.Builder.SqlServer(ConfigurationSource.Convention)
-                        .ValueGenerationStrategy(property.SqlServer().ValueGenerationStrategy);
+                        .ValueGenerationStrategy(property.SqlServer().GetForSqlServerValueGenerationStrategy());
                 }
             }
 

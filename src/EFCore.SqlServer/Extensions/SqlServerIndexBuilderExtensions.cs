@@ -28,7 +28,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(indexBuilder, nameof(indexBuilder));
 
-            indexBuilder.Metadata.SqlServer().IsClustered = clustered;
+            indexBuilder.Metadata.SqlServer().SetSqlServerIsClustered(clustered);
 
             return indexBuilder;
         }
@@ -53,7 +53,7 @@ namespace Microsoft.EntityFrameworkCore
             Check.NotNull(indexBuilder, nameof(indexBuilder));
             Check.NotNull(propertyNames, nameof(propertyNames));
 
-            indexBuilder.Metadata.SqlServer().IncludeProperties = propertyNames;
+            indexBuilder.Metadata.SqlServer().SetSqlServerIncludeProperties(propertyNames);
 
             return indexBuilder;
         }
@@ -93,7 +93,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(indexBuilder, nameof(indexBuilder));
 
-            indexBuilder.Metadata.SqlServer().IsOnline = online;
+            indexBuilder.Metadata.SqlServer().SetSqlServerIsOnline(online);
 
             return indexBuilder;
         }

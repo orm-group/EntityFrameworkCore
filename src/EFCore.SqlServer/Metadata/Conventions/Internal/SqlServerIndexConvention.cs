@@ -137,7 +137,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
             // TODO: compare with a cached filter to avoid overriding if it was set by a different convention
             var index = indexBuilder.Metadata;
             if (index.IsUnique
-                && index.SqlServer().IsClustered != true
+                && index.SqlServer().GetSqlServerIsClustered() != true
                 && index.Properties
                     .Any(property => property.IsColumnNullable()))
             {

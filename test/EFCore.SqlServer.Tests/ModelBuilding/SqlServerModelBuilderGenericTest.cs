@@ -373,10 +373,10 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                 Assert.Equal("BT", book.SqlServer().GetTableName());
                 Assert.Equal("LS", bookOwnership1.DeclaringEntityType.SqlServer().GetSchema());
                 Assert.Equal("LT", bookOwnership1.DeclaringEntityType.SqlServer().GetTableName());
-                Assert.False(bookOwnership1.DeclaringEntityType.SqlServer().IsMemoryOptimized);
+                Assert.False(bookOwnership1.DeclaringEntityType.SqlServer().GetSqlServerIsMemoryOptimized());
                 Assert.Equal("TS", bookOwnership2.DeclaringEntityType.SqlServer().GetSchema());
                 Assert.Equal("TT", bookOwnership2.DeclaringEntityType.SqlServer().GetTableName());
-                Assert.True(bookOwnership2.DeclaringEntityType.SqlServer().IsMemoryOptimized);
+                Assert.True(bookOwnership2.DeclaringEntityType.SqlServer().GetSqlServerIsMemoryOptimized());
                 Assert.Equal("AS2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().GetSchema());
                 Assert.Equal("AT2", bookLabel1Ownership1.DeclaringEntityType.SqlServer().GetTableName());
                 Assert.Equal("SS1", bookLabel1Ownership2.DeclaringEntityType.SqlServer().GetSchema());
@@ -445,7 +445,7 @@ namespace Microsoft.EntityFrameworkCore.ModelBuilding
                     owned.GetProperties().Select(p => p.SqlServer().GetColumnName()));
                 Assert.Equal(nameof(Order), owned.SqlServer().GetTableName());
                 Assert.Null(owned.SqlServer().GetSchema());
-                Assert.True(owned.SqlServer().IsMemoryOptimized);
+                Assert.True(owned.SqlServer().GetSqlServerIsMemoryOptimized());
 
                 modelBuilder.Entity<Customer>().OwnsMany(
                     c => c.Orders,

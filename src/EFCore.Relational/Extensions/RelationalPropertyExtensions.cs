@@ -29,9 +29,9 @@ namespace Microsoft.EntityFrameworkCore
         /// </summary>
         /// <param name="property"> The property. </param>
         /// <returns> The name of the column to which the property is mapped. </returns>
-        public static string GetColumnName([NotNull] this IProperty property) =>
-            (string)property[RelationalAnnotationNames.ColumnName]
-            ?? GetDefaultColumnName(property);
+        public static string GetColumnName([NotNull] this IProperty property)
+            => (string)property[RelationalAnnotationNames.ColumnName]
+               ?? GetDefaultColumnName(property);
 
         /// <summary>
         ///     Returns the default column name to which the property would be mapped.

@@ -39,9 +39,9 @@ namespace Microsoft.EntityFrameworkCore
                 modelBuilder.HasSequence(name, schema).IncrementsBy(10);
             }
 
-            model.SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.SequenceHiLo;
-            model.SqlServer().HiLoSequenceName = name;
-            model.SqlServer().HiLoSequenceSchema = schema;
+            model.SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo);
+            model.SqlServer().SetSqlServerHiLoSequenceName(name);
+            model.SqlServer().SetSqlServerHiLoSequenceSchema(schema);
 
             return modelBuilder;
         }
@@ -64,11 +64,11 @@ namespace Microsoft.EntityFrameworkCore
 
             var property = modelBuilder.Model;
 
-            property.SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.IdentityColumn;
-            property.SqlServer().IdentitySeed = seed;
-            property.SqlServer().IdentityIncrement = increment;
-            property.SqlServer().HiLoSequenceName = null;
-            property.SqlServer().HiLoSequenceSchema = null;
+            property.SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.IdentityColumn);
+            property.SqlServer().SetSqlServerIdentitySeed(seed);
+            property.SqlServer().SetSqlServerIdentityIncrement(increment);
+            property.SqlServer().SetSqlServerHiLoSequenceName(null);
+            property.SqlServer().SetSqlServerHiLoSequenceSchema(null);
 
             return modelBuilder;
         }

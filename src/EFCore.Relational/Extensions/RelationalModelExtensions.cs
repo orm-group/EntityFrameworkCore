@@ -26,7 +26,7 @@ namespace Microsoft.EntityFrameworkCore
             => (string)Check.NotNull(model, nameof(model))[RelationalAnnotationNames.DefaultSchema];
 
         /// <summary>
-        ///     Sets the value for <see cref="GetDefaultSchema" />.
+        ///     Sets the default schema.
         /// </summary>
         /// <param name="model"> The model to set the default schema for. </param>
         /// <param name="value"> The value to set. </param>
@@ -36,7 +36,7 @@ namespace Microsoft.EntityFrameworkCore
                 Check.NullButNotEmpty(value, nameof(value)));
 
         /// <summary>
-        ///     Sets the value for <see cref="GetDefaultSchema" />.
+        ///     Sets the default schema.
         /// </summary>
         /// <param name="model"> The model to set the default schema for. </param>
         /// <param name="value"> The value to set. </param>
@@ -48,10 +48,10 @@ namespace Microsoft.EntityFrameworkCore
                 Check.NullButNotEmpty(value, nameof(value)), fromDataAnnotation);
 
         /// <summary>
-        ///     Returns the configuration source for <see cref="GetDefaultSchema" />.
+        ///     Returns the configuration source for the default schema.
         /// </summary>
         /// <param name="model"> The model to find configuration source for. </param>
-        /// <returns> The configuration source for <see cref="GetDefaultSchema" />. </returns>
+        /// <returns> The configuration source for the default schema. </returns>
         public static ConfigurationSource? GetDefaultSchemaConfigurationSource([NotNull] this IConventionModel model)
             => model.FindAnnotation(RelationalAnnotationNames.DefaultSchema)?.GetConfigurationSource();
 

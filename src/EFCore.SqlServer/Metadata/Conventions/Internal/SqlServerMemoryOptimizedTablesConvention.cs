@@ -73,7 +73,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
         /// </summary>
         public virtual InternalKeyBuilder Apply(InternalKeyBuilder keyBuilder)
         {
-            if (keyBuilder.Metadata.DeclaringEntityType.SqlServer().IsMemoryOptimized)
+            if (keyBuilder.Metadata.DeclaringEntityType.SqlServer().GetSqlServerIsMemoryOptimized())
             {
                 keyBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(false);
             }
@@ -89,7 +89,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Metadata.Conventions.Internal
         /// </summary>
         public virtual InternalIndexBuilder Apply(InternalIndexBuilder indexBuilder)
         {
-            if (indexBuilder.Metadata.DeclaringEntityType.GetAllBaseTypesInclusive().Any(et => et.SqlServer().IsMemoryOptimized))
+            if (indexBuilder.Metadata.DeclaringEntityType.GetAllBaseTypesInclusive().Any(et => et.SqlServer().GetSqlServerIsMemoryOptimized()))
             {
                 indexBuilder.SqlServer(ConfigurationSource.Convention).IsClustered(false);
             }

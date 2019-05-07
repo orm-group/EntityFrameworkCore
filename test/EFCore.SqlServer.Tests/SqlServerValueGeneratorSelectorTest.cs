@@ -89,7 +89,7 @@ namespace Microsoft.EntityFrameworkCore
         public void Returns_sequence_value_generators_when_configured_for_model()
         {
             var model = BuildModel();
-            model.SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.SequenceHiLo;
+            model.SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo);
             model.SqlServer().GetOrAddSequence(SqlServerModelAnnotations.DefaultHiLoSequenceName);
             var entityType = model.FindEntityType(typeof(AnEntity));
 
@@ -130,7 +130,7 @@ namespace Microsoft.EntityFrameworkCore
         public void Returns_generator_configured_on_model_when_property_is_Identity()
         {
             var model = SqlServerTestHelpers.Instance.BuildModelFor<AnEntity>();
-            model.SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.SequenceHiLo;
+            model.SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo);
             model.SqlServer().GetOrAddSequence(SqlServerModelAnnotations.DefaultHiLoSequenceName);
             var entityType = model.FindEntityType(typeof(AnEntity));
 
@@ -158,10 +158,10 @@ namespace Microsoft.EntityFrameworkCore
             }
 
             entityType.FindProperty("AlwaysIdentity").ValueGenerated = ValueGenerated.OnAdd;
-            entityType.FindProperty("AlwaysIdentity").SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.IdentityColumn;
+            entityType.FindProperty("AlwaysIdentity").SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.IdentityColumn);
 
             entityType.FindProperty("AlwaysSequence").ValueGenerated = ValueGenerated.OnAdd;
-            entityType.FindProperty("AlwaysSequence").SqlServer().ValueGenerationStrategy = SqlServerValueGenerationStrategy.SequenceHiLo;
+            entityType.FindProperty("AlwaysSequence").SqlServer().SetSqlServerValueGenerationStrategy(SqlServerValueGenerationStrategy.SequenceHiLo);
 
             return model;
         }

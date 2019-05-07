@@ -104,7 +104,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                 .SelectMany(t => t.GetDeclaredProperties())
                 .Where(
                     p => p.ClrType.UnwrapNullableType() == typeof(byte)
-                         && p.SqlServer().ValueGenerationStrategy == SqlServerValueGenerationStrategy.IdentityColumn))
+                         && p.SqlServer().GetForSqlServerValueGenerationStrategy() == SqlServerValueGenerationStrategy.IdentityColumn))
             {
                 logger.ByteIdentityColumnWarning(property);
             }
@@ -143,7 +143,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
         {
             foreach (var index in model.GetEntityTypes().SelectMany(t => t.GetDeclaredIndexes()))
             {
-                var includeProperties = index.SqlServer().IncludeProperties;
+                var includeProperties = index.SqlServer().GetSqlServerIncludeProperties();
                 if (includeProperties?.Count > 0)
                 {
                     var notFound = includeProperties
@@ -191,11 +191,11 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
             IReadOnlyList<IEntityType> mappedTypes, string tableName, DiagnosticsLoggers loggers)
         {
             var firstMappedType = mappedTypes[0];
-            var isMemoryOptimized = firstMappedType.SqlServer().IsMemoryOptimized;
+            var isMemoryOptimized = firstMappedType.SqlServer().GetSqlServerIsMemoryOptimized();
 
             foreach (var otherMappedType in mappedTypes.Skip(1))
             {
-                if (isMemoryOptimized != otherMappedType.SqlServer().IsMemoryOptimized)
+                if (isMemoryOptimized != otherMappedType.SqlServer().GetSqlServerIsMemoryOptimized())
                 {
                     throw new InvalidOperationException(
                         SqlServerStrings.IncompatibleTableMemoryOptimizedMismatch(
@@ -228,8 +228,8 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                 var columnName = propertyAnnotations.GetColumnName();
                 if (propertyMappings.TryGetValue(columnName, out var duplicateProperty))
                 {
-                    var propertyStrategy = property.SqlServer().ValueGenerationStrategy;
-                    var duplicatePropertyStrategy = duplicateProperty.SqlServer().ValueGenerationStrategy;
+                    var propertyStrategy = property.SqlServer().GetForSqlServerValueGenerationStrategy();
+                    var duplicatePropertyStrategy = duplicateProperty.SqlServer().GetForSqlServerValueGenerationStrategy();
                     if (propertyStrategy != duplicatePropertyStrategy
                         && (propertyStrategy == SqlServerValueGenerationStrategy.IdentityColumn
                             || duplicatePropertyStrategy == SqlServerValueGenerationStrategy.IdentityColumn))
@@ -247,7 +247,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                 else
                 {
                     propertyMappings[columnName] = property;
-                    if (property.SqlServer().ValueGenerationStrategy == SqlServerValueGenerationStrategy.IdentityColumn)
+                    if (property.SqlServer().GetForSqlServerValueGenerationStrategy() == SqlServerValueGenerationStrategy.IdentityColumn)
                     {
                         identityColumns.Add(property);
                     }
@@ -285,8 +285,8 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                     continue;
                 }
 
-                if (key.SqlServer().IsClustered
-                    != duplicateKey.SqlServer().IsClustered)
+                if (key.SqlServer().GetSqlServerIsClustered()
+                    != duplicateKey.SqlServer().GetSqlServerIsClustered())
                 {
                     throw new InvalidOperationException(
                         SqlServerStrings.DuplicateKeyMismatchedClustering(

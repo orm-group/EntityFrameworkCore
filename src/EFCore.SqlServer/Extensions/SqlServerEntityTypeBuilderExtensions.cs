@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(entityTypeBuilder, nameof(entityTypeBuilder));
 
-            entityTypeBuilder.Metadata.SqlServer().IsMemoryOptimized = memoryOptimized;
+            entityTypeBuilder.Metadata.SqlServer().SetSqlServerIsMemoryOptimized(memoryOptimized);
 
             return entityTypeBuilder;
         }

@@ -24,7 +24,7 @@ namespace Microsoft.EntityFrameworkCore
         {
             Check.NotNull(collectionOwnershipBuilder, nameof(collectionOwnershipBuilder));
 
-            collectionOwnershipBuilder.OwnedEntityType.SqlServer().IsMemoryOptimized = memoryOptimized;
+            collectionOwnershipBuilder.OwnedEntityType.SqlServer().SetSqlServerIsMemoryOptimized(memoryOptimized);
 
             return collectionOwnershipBuilder;
         }
